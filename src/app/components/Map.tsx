@@ -12,6 +12,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import "../app.scss";
+import { useTheme } from '../context/ThemeContext';
 
 
 const [MapContainer, TileLayer] = [
@@ -29,8 +30,14 @@ export default function Map() {
 		country: null,
 		since: "2000-01-01",
 		limit: 999999,
-		source: "all"
+		source: "all",
+		name: null
 	});
+	const { theme } = useTheme();
+
+	useEffect(() => {
+		document.body.setAttribute('data-theme', theme);
+	}, [theme]);
 
 	useEffect(() => {
 		const fetchLocation = async () => {
@@ -75,15 +82,17 @@ export default function Map() {
 
 	if (center === null) return <Skeleton />;
 	
+	const lightTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+	const darkTileLayer = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
 	return (
 		<div className="container">
 			<Filters filter={filter} setFilter={setFilter}/>
 
 			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap}>
-				<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+				<TileLayer url={theme === 'light' ? lightTileLayer : darkTileLayer}/>
 
-				<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source}/>
+				<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source} name={filter.name}/>
 			</MapContainer>
 		</div>
 	);

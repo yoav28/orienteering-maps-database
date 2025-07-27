@@ -4,8 +4,8 @@ body {
 	padding: 0;
 	font-family: Arial, sans-serif, Helvetica, sans-serif, Verdana, sans-serif,
 		"Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	background-color: #eee;
-	color: #333;
+	background-color: var(--background);
+	color: var(--foreground);
 }
 
 .container {
@@ -43,7 +43,7 @@ body {
 			font-weight: 600;
 		}
 		
-		& > select {
+		& > select, & > input {
 			font-size: 16px;
 			font-weight: 500;
 			padding: 5px;
@@ -56,6 +56,23 @@ body {
 			&:focus {
 				outline: none;
 			}
+		}
+	}
+
+	.theme-toggle-button {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 5px;
+		border-radius: 50%;
+		display: flex;
+		margin-left: auto;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.2s;
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.1);
 		}
 	}
 }
@@ -113,3 +130,35 @@ $popup-size: 300px;
   background: #e0e0e0;
   border-radius: 5px;
 }
+
+body[data-theme='dark'] {
+	.filters {
+		& > div {
+			& > select, & > input {
+				background-color: #333;
+				color: #eee;
+				border-color: #555;
+			}
+		}
+
+		.theme-toggle-button {
+			img {
+				filter: invert(1);
+			}
+
+			&:hover {
+				background-color: rgba(255, 255, 255, 0.1);
+			}
+		}
+	}
+
+	.popup-inner {
+		background-color: #222;
+		color: #eee;
+
+		& > span {
+			color: #aaa;
+		}
+	}
+}
+

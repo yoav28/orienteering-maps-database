@@ -1,13 +1,18 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background-light: #ffffff;
+  --foreground-light: #171717;
+  --background-dark: #0a0a0a;
+  --foreground-dark: #ededed;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body[data-theme='light'] {
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
+}
+
+body[data-theme='dark'] {
+  --background: var(--background-dark);
+  --foreground: var(--foreground-dark);
 }
 
 html,
@@ -35,8 +40,3 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}

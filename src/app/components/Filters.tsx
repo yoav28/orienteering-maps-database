@@ -1,9 +1,11 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import {useCountries} from '@/app/hooks/useCountries';
 import {displayCountry} from '@/app/lib/countries';
 import {FilterState} from '@/app/types';
+import { useTheme } from '../context/ThemeContext';
 
 
 interface FiltersProps {
@@ -14,6 +16,7 @@ interface FiltersProps {
 
 export function Filters({filter, setFilter}: FiltersProps) {
 	const countries = useCountries();
+	const { theme, toggleTheme } = useTheme();
 
 
 	const daysBack = (days: number) => {
@@ -94,5 +97,13 @@ export function Filters({filter, setFilter}: FiltersProps) {
 				<option value="omaps-au">Omaps Australia</option>
 			</select>
 		</div>
+		
+		<button onClick={toggleTheme} className="theme-toggle-button">
+			{theme === 'light' ? (
+				<Image src="/moon.svg" alt="Switch to Dark Mode" width={24} height={24} />
+			) : (
+				<Image src="/sun.svg" alt="Switch to Light Mode" width={24} height={24} />
+			)}
+		</button>
 	</div>
 }
