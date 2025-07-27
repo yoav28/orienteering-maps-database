@@ -6,17 +6,27 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:seed": "node src/scripts/seed.js"
   },
   "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "next": "15.4.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.4.4"
+    "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/leaflet": "^1.9.20",
     "@types/node": "^20",
     "@types/react": "^19",
-    "@types/react-dom": "^19"
-  }
+    "@types/react-dom": "^19",
+    "glob": "^11.0.3",
+    "sass": "^1.89.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
 }

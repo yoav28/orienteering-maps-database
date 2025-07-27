@@ -1,0 +1,61 @@
+
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif, Helvetica, sans-serif, Verdana, sans-serif,
+		"Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	background-color: #eee;
+	color: #333;
+}
+
+.container {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: flex-start;
+	padding: 20px;
+	height: 100vh;
+	width: 100vw;
+	gap: 10px;
+}
+
+.map {
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;
+}
+
+.filters {
+	display: flex;
+	align-items: center;
+	height: 50px;
+	width: 100%;
+	gap: 20px;
+	
+	& > div {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		
+		& > label {
+			font-size: 16px;
+			font-weight: 600;
+		}
+		
+		& > select {
+			font-size: 16px;
+			font-weight: 500;
+			padding: 5px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			background-color: #f9f9f9;
+			color: #111;
+			cursor: pointer;
+			
+			&:focus {
+				outline: none;
+			}
+		}
+	}
+}
