@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 const [CircleMarker, Popup, MarkerClusterGroup] = [
 	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), { ssr: false }),
 	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false }),
-	dynamic(() => import('react-leaflet-markercluster'), { ssr: false })
+	dynamic(() => import('react-leaflet-markercluster').then(mod => mod.default), { ssr: false })
 ];
 
 
@@ -18,10 +18,11 @@ interface MarksProps {
 	source: string;
 	since: string;
 	limit: number;
+	name: string | null;
 }
 
 
-export default function Marks({country, since, limit, source}: MarksProps) {
+export default function Marks({country, since, limit, source, name}: MarksProps) {
 	const [renderedMarkers, setRenderedMarkers] = useState<ReactNode[]>([]);
 	const [events, setEvents] = useState<LocationType[]>([]);
 
@@ -40,7 +41,8 @@ export default function Marks({country, since, limit, source}: MarksProps) {
 			limit: (limit || 999999).toString(),
 			country: country || "",
 			source: source,
-			since: since
+			since: since,
+			...(name && { name })
 		}).toString();
 
 

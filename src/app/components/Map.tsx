@@ -81,9 +81,16 @@ export default function Map() {
 	}, [filter.country, map]);
 
 
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+	const toggleSidebar = () => {
+		setIsSidebarOpen(!isSidebarOpen);
+	};
+
+
 	if (center === null) return <Skeleton />;
 
-	const tileLayers = {
+		const tileLayers = {
 		light: {
 			road: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -100,10 +107,16 @@ export default function Map() {
 		return tileLayers[theme][filter.mapStyle] || tileLayers[theme].road;
 	};
 
-
 	return (
 		<div className="container">
-			<Filters filter={filter} setFilter={setFilter}/>
+			<button className="filter-toggle-button" onClick={toggleSidebar}>
+				Filters
+			</button>
+
+			<div className={`filter-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+				<button className="close-sidebar-button" onClick={toggleSidebar}>&times;</button>
+				<Filters filter={filter} setFilter={setFilter} setIsSidebarOpen={setIsSidebarOpen}/>
+			</div>
 
 			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap}>
 				<TileLayer url={getTileLayerUrl()}/>

@@ -11,10 +11,11 @@ import {FilterState} from '@/app/types';
 interface FiltersProps {
 	filter: FilterState;
 	setFilter: React.Dispatch<React.SetStateAction<FilterState>>;
+	setIsSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
-export function Filters({filter, setFilter}: FiltersProps) {
+export function Filters({filter, setFilter, setIsSidebarOpen}: FiltersProps) {
 	const countries = useCountries();
 	const { theme, toggleTheme } = useTheme();
 
@@ -38,7 +39,7 @@ export function Filters({filter, setFilter}: FiltersProps) {
 			<label htmlFor="country">Country:</label>
 			<select id="country" name="country" value={filter.country ?? "Sweden"}
 			        onChange={(e) => {
-					const value = e.target.value;
+										const value = e.target.value;
 					setFilter((prev) => ({...prev, country: value}));
 				}}>
 				{countries.map((country) => (
@@ -53,7 +54,7 @@ export function Filters({filter, setFilter}: FiltersProps) {
 			<label htmlFor="since">Time Frame:</label>
 			<select id="since" name="since" defaultValue={daysBack(365 * 2)} 
 			        onChange={(e) => {
-					const value = e.target.value;
+										const value = e.target.value;
 					setFilter((prev) => ({...prev, since: value}));
 				}}>
 				<option value="2000-01-01">All</option>

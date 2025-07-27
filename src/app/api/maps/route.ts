@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   const country = searchParams.get('country');
   const since = searchParams.get('since');
   const source = searchParams.get('source');
+  const name = searchParams.get('name');
   
   
   if (!limit || !country || !since || !source) {
@@ -18,7 +19,7 @@ export async function GET(request: Request) {
   }
   
 
-  const maps = getMaps(country, limit, since, source.toLowerCase());
+  const maps = getMaps(country, limit, since, source.toLowerCase(), name);
   
   return new Response(JSON.stringify(maps), {
     headers: { 'content-type': 'application/json' },
