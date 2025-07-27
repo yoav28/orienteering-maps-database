@@ -5,6 +5,7 @@ import { useMapEvents } from 'react-leaflet';
 import { LocationType } from "@/app/types";
 import dynamic from "next/dynamic";
 import L from 'leaflet';
+import PopupInner from "@/app/components/PopupInner";
 
 const [CircleMarker, Popup] = [
 	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), { ssr: false }),
@@ -33,6 +34,7 @@ export default function Marks({ country, since, limit }: MarksProps) {
 
 
 	const fetchEvents = async () => {
+		console.log(`Fetching events for country: ${country}, since: ${since}, limit: ${limit}`);
 		const response = await fetch(`/api/maps?limit=${limit || 999999}&since=${since || "2000-01-01"}&country=${country}`);
 		const data = await response.json();
 
@@ -57,20 +59,28 @@ export default function Marks({ country, since, limit }: MarksProps) {
 	
 	const allMarkers = useMemo(() => events.map((mark: LocationType) => {
 		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: "red", fillOpacity: 0}} radius={3}>
-			{/*<Popup>*/}
-			{/*	<b>{mark.name}</b><br/>*/}
-			{/*	<img src={mark.map} alt={mark.name} style={{maxWidth: '100px', height: 'auto'}}/>*/}
-			{/*</Popup>*/}
+			<Popup>
+				<PopupInner id={mark.id}/>
+			</Popup>
 		</CircleMarker>
 	}), [events]);
 
 	
 	const visibleMarkers = useMemo(() => {
-		if (!bounds || allMarkers.length === 0)
+		const len = allMarkers.length;
+		
+		if (!bounds || len === 0)
 			return [];
 		
-		if (zoom < 7)
-			return [];
+		if (zoom < 3 && len > 500)
+			return allMarkers.slice(0, 500);
+		
+		if (zoom < 5 && len > 1000) 
+			return allMarkers.slice(0, 1000);
+		
+		if (zoom < 8 && len > 5000)
+			return allMarkers.slice(0, 5000);
+		
 
 		return allMarkers.filter((mark: any) => bounds.contains(mark.props.center));
 	}, [bounds, allMarkers, zoom]);

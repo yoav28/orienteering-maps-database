@@ -25,7 +25,7 @@ export function Filters({filter, setFilter}: FiltersProps) {
 	return <div className="filters">
 		<div>
 			<label htmlFor="country">Country:</label>
-			<select id="country" name="country" defaultValue={filter.country ?? "Sweden"}
+			<select id="country" name="country" value={filter.country ?? "Sweden"}
 			        onChange={(e) => {
 					const value = e.target.value;
 					setFilter((prev) => ({...prev, country: value}));

@@ -36,9 +36,10 @@ export default function Map() {
 				setCenter([data.latitude, data.longitude]);
 	  
 			
-			if (data.country) {
-				setFilter((prev) => ({...prev, country: data.country}));
-			}
+			setFilter((prev) => ({
+				...prev,
+				country: data.country || "Sweden"
+			}));
 		};
 		fetchLocation();
 	}, []);
