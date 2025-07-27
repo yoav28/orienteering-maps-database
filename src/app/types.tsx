@@ -22,4 +22,5 @@ export type FilterState = {
 	source: string;
 	since: string;
 	limit: number;
+	mapStyle: string;
 };

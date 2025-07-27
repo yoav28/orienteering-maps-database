@@ -31,7 +31,8 @@ export default function Map() {
 		since: "2000-01-01",
 		limit: 999999,
 		source: "all",
-		name: null
+		name: null,
+		mapStyle: "road"
 	});
 	const { theme } = useTheme();
 
@@ -81,16 +82,31 @@ export default function Map() {
 
 
 	if (center === null) return <Skeleton />;
-	
-	const lightTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-	const darkTileLayer = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+
+	const tileLayers = {
+		light: {
+			road: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+			satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+			topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+		},
+		dark: {
+			road: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+			satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+			topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+		}
+	};
+
+	const getTileLayerUrl = () => {
+		return tileLayers[theme][filter.mapStyle] || tileLayers[theme].road;
+	};
+
 
 	return (
 		<div className="container">
 			<Filters filter={filter} setFilter={setFilter}/>
 
 			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap}>
-				<TileLayer url={theme === 'light' ? lightTileLayer : darkTileLayer}/>
+				<TileLayer url={getTileLayerUrl()}/>
 
 				<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source} name={filter.name}/>
 			</MapContainer>

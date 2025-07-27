@@ -4,8 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import {useCountries} from '@/app/hooks/useCountries';
 import {displayCountry} from '@/app/lib/countries';
+import {useTheme} from '../context/ThemeContext';
 import {FilterState} from '@/app/types';
-import { useTheme } from '../context/ThemeContext';
 
 
 interface FiltersProps {
@@ -26,6 +26,14 @@ export function Filters({filter, setFilter}: FiltersProps) {
 
 
 	return <div className="filters">
+		<button onClick={toggleTheme} className="theme-toggle-button">
+			{theme === 'light' ? (
+				<Image src="/moon.svg" alt="Switch to Dark Mode" width={24} height={24}/>
+			) : (
+				<Image src="/sun.svg" alt="Switch to Light Mode" width={24} height={24}/>
+			)}
+		</button>
+		
 		<div>
 			<label htmlFor="country">Country:</label>
 			<select id="country" name="country" value={filter.country ?? "Sweden"}
@@ -97,13 +105,18 @@ export function Filters({filter, setFilter}: FiltersProps) {
 				<option value="omaps-au">Omaps Australia</option>
 			</select>
 		</div>
-		
-		<button onClick={toggleTheme} className="theme-toggle-button">
-			{theme === 'light' ? (
-				<Image src="/moon.svg" alt="Switch to Dark Mode" width={24} height={24} />
-			) : (
-				<Image src="/sun.svg" alt="Switch to Light Mode" width={24} height={24} />
-			)}
-		</button>
+
+		<div>
+			<label htmlFor="mapStyle">Map Style:</label>
+			<select id="mapStyle" name="mapStyle" defaultValue={filter.mapStyle}
+			        onChange={(e) => {
+				        const value = e.target.value;
+				        setFilter((prev) => ({...prev, mapStyle: value}));
+			        }}>
+				<option value="road">Road</option>
+				<option value="satellite">Satellite</option>
+				<option value="topographic">Topographic</option>
+			</select>
+		</div>
 	</div>
 }
