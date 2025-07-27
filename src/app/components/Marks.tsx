@@ -100,7 +100,7 @@ export default function Marks({country, since, limit, source}: MarksProps) {
 						return [...prev, ...newMarkers];
 					});
 
-					setTimeout(() => renderChunk(index + chunkSize), 100);
+					setTimeout(() => renderChunk(index + chunkSize), 150);
 				}
 			};
 			renderChunk();

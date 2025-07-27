@@ -7,6 +7,7 @@ const Marks = dynamic(() => import('@/app/components/Marks'), { ssr: false });
 import {Map as LeafletMap} from 'leaflet';
 import {FilterState} from '@/app/types';
 import dynamic from 'next/dynamic';
+import {Skeleton} from '@/app/components/Skeleton';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
@@ -59,9 +60,11 @@ export default function Map() {
 				if (data && data.length > 0) {
 					const { lat, lon } = data[0];
 					const newCenter: [number, number] = [parseFloat(lat), parseFloat(lon)];
-					map.flyTo(newCenter, 7);
+					map.flyTo(newCenter, 6);
 				}
-			} catch (error) {
+			} 
+			
+			catch (error) {
 				console.error('Failed to fetch country coordinates:', error);
 			}
 		};
@@ -69,14 +72,15 @@ export default function Map() {
 		fetchCountryCoordinates(filter.country);
 	}, [filter.country, map]);
 
-	if (center === null) return <span>Loading...</span>;
+
+	if (center === null) return <Skeleton />;
 	
 
 	return (
 		<div className="container">
 			<Filters filter={filter} setFilter={setFilter}/>
 
-			<MapContainer className="map" center={center} zoom={7} scrollWheelZoom={false} preferCanvas={true} ref={setMap}>
+			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap}>
 				<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
 
 				<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source}/>
