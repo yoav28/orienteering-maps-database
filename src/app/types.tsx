@@ -1,5 +1,3 @@
-
-
 export type LocationType = {
 	id: number;
 	lat: number;
@@ -15,4 +13,10 @@ export type Event = {
 	name: string;
 	country: string;
 	class_id: number;
+};
+
+export type FilterState = {
+  country: string | null;
+  since: string;
+  limit: number;
 };

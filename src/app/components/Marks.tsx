@@ -1,18 +1,24 @@
-import React, {ReactNode, useEffect, useMemo, useState} from "react";
-import {useMapEvents} from 'react-leaflet';
-import {LocationType} from "./types";
+"use client";
+
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import { useMapEvents } from 'react-leaflet';
+import { LocationType } from "@/app/types";
 import dynamic from "next/dynamic";
 import L from 'leaflet';
 
-
 const [CircleMarker, Popup] = [
-	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), {ssr: false}),
-	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), {ssr: false}),
+	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), { ssr: false }),
+	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false }),
 ];
 
+interface MarksProps {
+  country: string | null;
+  since: string;
+  limit: number;
+}
 
 
-export default function Marks({country, since, limit}: {country: string | null, since: string, limit: number}) {
+export default function Marks({ country, since, limit }: MarksProps) {
 	const [renderedMarkers, setRenderedMarkers] = useState<ReactNode[]>([]);
 	const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
 	const [events, setEvents] = useState<LocationType[]>([]);
@@ -20,14 +26,13 @@ export default function Marks({country, since, limit}: {country: string | null, 
 
 	
 	useEffect(() => {
-		fetchEvents();
-	}, []);
+		if (country) {
+			fetchEvents();
+		}
+	}, [country, since, limit]);
 
 
 	const fetchEvents = async () => {
-		if (!country) 
-			return;
-		
 		const response = await fetch(`/api/maps?limit=${limit || 999999}&since=${since || "2000-01-01"}&country=${country}`);
 		const data = await response.json();
 
@@ -64,7 +69,7 @@ export default function Marks({country, since, limit}: {country: string | null, 
 		if (!bounds || allMarkers.length === 0)
 			return [];
 		
-		if (zoom < 8)
+		if (zoom < 7)
 			return [];
 
 		return allMarkers.filter((mark: any) => bounds.contains(mark.props.center));

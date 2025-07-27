@@ -1,4 +1,4 @@
-import Map from "@/app/map";
+import Map from "@/app/components/Map";
 
 
 
