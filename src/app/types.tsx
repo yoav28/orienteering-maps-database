@@ -2,6 +2,7 @@ export type LocationType = {
 	id: number;
 	lat: number;
 	lon: number;
+	source: string;
 };
 
 
@@ -17,7 +18,8 @@ export type Event = {
 };
 
 export type FilterState = {
-  country: string | null;
-  since: string;
-  limit: number;
+    country: string | null;
+	source: string;
+	since: string;
+	limit: number;
 };

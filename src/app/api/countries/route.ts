@@ -1,4 +1,4 @@
-import {getCountries, getEvents} from '@/db';
+import {getCountries, getMaps} from '@/db';
 
 
 export async function GET(request: Request) {

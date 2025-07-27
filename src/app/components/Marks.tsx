@@ -1,118 +1,115 @@
 "use client";
 
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
-import { useMapEvents } from 'react-leaflet';
-import { LocationType } from "@/app/types";
-import dynamic from "next/dynamic";
-import L from 'leaflet';
+import React, {ReactNode, useEffect, useMemo, useState} from "react";
 import PopupInner from "@/app/components/PopupInner";
+import {LocationType} from "@/app/types";
+import dynamic from "next/dynamic";
 
-const [CircleMarker, Popup] = [
+
+const [CircleMarker, Popup, MarkerClusterGroup] = [
 	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), { ssr: false }),
 	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false }),
+	dynamic(() => import('react-leaflet-markercluster'), { ssr: false })
 ];
 
+
 interface MarksProps {
-  country: string | null;
-  since: string;
-  limit: number;
+	country: string | null;
+	source: string;
+	since: string;
+	limit: number;
 }
 
 
-export default function Marks({ country, since, limit }: MarksProps) {
+export default function Marks({country, since, limit, source}: MarksProps) {
 	const [renderedMarkers, setRenderedMarkers] = useState<ReactNode[]>([]);
-	const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
 	const [events, setEvents] = useState<LocationType[]>([]);
-	const [zoom, setZoom] = useState<number>(0);
 
 	
 	useEffect(() => {
 		if (country) {
 			fetchEvents();
 		}
-	}, [country, since, limit]);
+	}, [country, since, limit, source]);
 
 
 	const fetchEvents = async () => {
-		const response = await fetch(`/api/maps?limit=${limit || 999999}&since=${since || "2000-01-01"}&country=${country}`);
+		console.log(country);
+		
+		const params = new URLSearchParams({
+			limit: (limit || 999999).toString(),
+			country: country || "",
+			source: source,
+			since: since
+		}).toString();
+
+
+		const response = await fetch(`/api/maps?${params}`);
+
+		if (!response.ok)
+			return console.error("Failed to fetch events:", response.statusText);
+		
 		const data = await response.json();
 
 		setEvents(data as LocationType[]);
 	};
-	
 
-	const MapEvents = () => {
-		useMapEvents({
-			moveend: (event) => {
-				const bounds = event.target.getBounds();
-				setBounds(bounds);
-				
-				const zoom = event.target.getZoom();
-				setZoom(zoom);
-			},
-		});
 
-		return null;
-	};
-
-	
 	const allMarkers = useMemo(() => events.map((mark: LocationType) => {
-		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: "red", fillOpacity: 0}} radius={3}>
+		const getColor = (source: string) => {
+			if (source === "livelox")
+				return "red";
+
+			if (source === "loggator")
+				return "orange";
+
+			if (source === "omaps")
+				return "#005583";
+
+			if (source === "omaps-no")
+				return "#00205B";
+
+			if (source === "omaps-au")
+				return "#012169";
+
+			return "black";
+		}
+
+		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: getColor(mark.source), fillOpacity: 0}} radius={3}>
 			<Popup className="popup">
 				<PopupInner id={mark.id}/>
 			</Popup>
 		</CircleMarker>
 	}), [events]);
-
 	
-	const visibleMarkers = useMemo(() => {
-		const len = allMarkers.length;
-		
-		if (!bounds || len === 0)
-			return [];
-		
-		if (zoom < 3 && len > 500)
-			return allMarkers.slice(0, 500);
-		
-		if (zoom < 5 && len > 1000) 
-			return allMarkers.slice(0, 1000);
-		
-		if (zoom < 8 && len > 5000)
-			return allMarkers.slice(0, 5000);
-		
-
-		return allMarkers.filter((mark: any) => bounds.contains(mark.props.center));
-	}, [bounds, allMarkers, zoom]);
-
 	
+
 	useEffect(() => {
 		setRenderedMarkers([]);
-		
-		if (visibleMarkers.length > 0) {
-			const chunkSize = 1000;
-			
+
+		if (allMarkers.length > 0) {
+			const chunkSize = 500;
+
 			const renderChunk = (index = 0) => {
-				const chunk = visibleMarkers.slice(index, index + chunkSize);
-				
+				const chunk = allMarkers.slice(index, index + chunkSize);
+
 				if (chunk.length > 0) {
 					setRenderedMarkers((prev) => {
 						const existingIds = new Set(prev.map((m: any) => m.key));
 						const newMarkers = chunk.filter((m: any) => !existingIds.has(m.key));
 						return [...prev, ...newMarkers];
 					});
-					
+
 					setTimeout(() => renderChunk(index + chunkSize), 100);
 				}
 			};
 			renderChunk();
 		}
-	}, [visibleMarkers]);
+	}, [allMarkers]);
 
-
-
-	return <div>
-		<MapEvents/>
-
+	
+	
+	return <MarkerClusterGroup>
 		{renderedMarkers}
-	</div>
+	</MarkerClusterGroup>
 }

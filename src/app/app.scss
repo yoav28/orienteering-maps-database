@@ -63,9 +63,14 @@ body {
 }
 
 
+$popup-size: 300px;
+
+
 .popup {
-	width: 250px;
-	height: 250px;
+	width: $popup-size;
+	height: $popup-size;
+	padding: 0 !important;
+	margin-bottom: 20px;
 }
 
 
@@ -81,8 +86,8 @@ body {
 	}
 	
 	& > img {
-		width: 100%;
 		border-radius: 5px;
 		cursor: pointer;
+		width: 100%;
 	}
 }

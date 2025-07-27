@@ -50,6 +50,8 @@ export function Filters({filter, setFilter}: FiltersProps) {
 				<option value={daysBack(90)}>Last 90 days</option>
 				<option value={daysBack(365)}>Last year</option>
 				<option value={daysBack(365 * 2)}>Last 2 years</option>
+				<option value={daysBack(365 * 5)}>Last 5 years</option>
+				<option value={daysBack(365 * 10)}>Last 10 years</option>
 			</select>
 		</div>
 
@@ -64,6 +66,32 @@ export function Filters({filter, setFilter}: FiltersProps) {
 				<option value="1000">1,000</option>
 				<option value="10000">10,000</option>
 				<option value="50000">50,000</option>
+			</select>
+		</div>
+		
+		<div>
+			<label htmlFor="source">Source:</label>
+			<select id="source" name="source" defaultValue={filter.source}
+			        onChange={(e) => {
+					const value = e.target.value;
+					
+					if (value === "omaps-au")
+						return setFilter((prev) => ({...prev, country: "Australia", source: value}));
+					
+					if (value === "omaps-no")
+						return setFilter((prev) => ({...prev, country: "Norway", source: value}));
+					
+					if (value === "omaps")
+						return setFilter((prev) => ({...prev, country: "Sweden", source: value}));
+					
+					setFilter((prev) => ({...prev, source: value}));
+				}}>
+				<option value="all">All</option>
+				<option value="livelox">Livelox</option>
+				<option value="loggator">Loggator</option>
+				<option value="omaps">Omaps Sweden</option>
+				<option value="omaps-no">Omaps Norway</option>
+				<option value="omaps-au">Omaps Australia</option>
 			</select>
 		</div>
 	</div>

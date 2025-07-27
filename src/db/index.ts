@@ -18,11 +18,12 @@ const db = new Database(dbPath);
 // - source: Source of the event (text, can be NULL)
 
 
-function getEvents(country: string, limit: string, since: string) {
+function getMaps(country: string, limit: string, since: string, source: string) {
     
-    let query = `SELECT id, lat, lon, name, date, country
+    let query = `SELECT id, lat, lon, source
                         FROM events
                         WHERE map IS NOT NULL`;
+    
     
     const params: (string | number)[] = [];
 
@@ -35,6 +36,11 @@ function getEvents(country: string, limit: string, since: string) {
         query += ` AND date >= ?`;
         params.push(since);
     }
+    
+    if (source && source !== 'all') {
+        query += ` AND source = ?`;
+        params.push(source);
+    }
 
     query += ` ORDER BY date DESC`;
 
@@ -44,8 +50,11 @@ function getEvents(country: string, limit: string, since: string) {
     }
     
     const stmt = db.prepare(query);
+    const all = stmt.all(...params);
     
-    return stmt.all(...params);
+    console.log(`Got ${all.length} events for country: ${country}, limit: ${limit}, since: ${since}, source: ${source}`);
+    
+    return all;
 }
 
 
@@ -68,4 +77,4 @@ function getEventById(id: number) {
 }
 
 
-export { getEvents, getCountries, getEventById };
+export { getMaps, getCountries, getEventById };
