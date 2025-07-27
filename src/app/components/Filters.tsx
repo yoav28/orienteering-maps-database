@@ -40,7 +40,7 @@ export function Filters({filter, setFilter}: FiltersProps) {
 
 		<div>
 			<label htmlFor="since">Time Frame:</label>
-			<select id="since" name="since" defaultValue={filter.since} 
+			<select id="since" name="since" defaultValue={daysBack(365 * 2)} 
 			        onChange={(e) => {
 					const value = e.target.value;
 					setFilter((prev) => ({...prev, since: value}));
