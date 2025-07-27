@@ -6,6 +6,7 @@ export type LocationType = {
 
 
 export type Event = {
+	id: number;
 	lat: number;
 	lon: number;
 	map: string;

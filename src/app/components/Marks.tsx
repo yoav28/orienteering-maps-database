@@ -34,7 +34,6 @@ export default function Marks({ country, since, limit }: MarksProps) {
 
 
 	const fetchEvents = async () => {
-		console.log(`Fetching events for country: ${country}, since: ${since}, limit: ${limit}`);
 		const response = await fetch(`/api/maps?limit=${limit || 999999}&since=${since || "2000-01-01"}&country=${country}`);
 		const data = await response.json();
 
@@ -59,7 +58,7 @@ export default function Marks({ country, since, limit }: MarksProps) {
 	
 	const allMarkers = useMemo(() => events.map((mark: LocationType) => {
 		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: "red", fillOpacity: 0}} radius={3}>
-			<Popup>
+			<Popup className="popup">
 				<PopupInner id={mark.id}/>
 			</Popup>
 		</CircleMarker>
@@ -113,7 +112,7 @@ export default function Marks({ country, since, limit }: MarksProps) {
 
 	return <div>
 		<MapEvents/>
-		
+
 		{renderedMarkers}
 	</div>
 }

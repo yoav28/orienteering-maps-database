@@ -24,7 +24,7 @@ export default function Map() {
 	const [filter, setFilter] = useState<FilterState>({
 		country: null,
 		since: "2000-01-01",
-		limit: 10000,
+		limit: 999999,
 	});
 
 	useEffect(() => {

@@ -29,8 +29,7 @@ export function Filters({filter, setFilter}: FiltersProps) {
 			        onChange={(e) => {
 					const value = e.target.value;
 					setFilter((prev) => ({...prev, country: value}));
-				}}
-			>
+				}}>
 				{countries.map((country) => (
 					<option key={country} value={country}>
 						{displayCountry(country)}
@@ -40,15 +39,13 @@ export function Filters({filter, setFilter}: FiltersProps) {
 		</div>
 
 		<div>
-			<label htmlFor="since">Since:</label>
+			<label htmlFor="since">Time Frame:</label>
 			<select id="since" name="since" defaultValue={filter.since} 
 			        onChange={(e) => {
 					const value = e.target.value;
 					setFilter((prev) => ({...prev, since: value}));
-				}}
-			>
+				}}>
 				<option value="2000-01-01">All</option>
-				<option value={daysBack(7)}>Last 7 days</option>
 				<option value={daysBack(30)}>Last 30 days</option>
 				<option value={daysBack(90)}>Last 90 days</option>
 				<option value={daysBack(365)}>Last year</option>
@@ -62,8 +59,7 @@ export function Filters({filter, setFilter}: FiltersProps) {
 				onChange={(e) => {
 					const value = parseInt(e.target.value, 10);
 					setFilter((prev) => ({...prev, limit: isNaN(value) ? 999999 : value}));
-				}}
-			>
+				}}>
 				<option value="999999">No Limit</option>
 				<option value="1000">1,000</option>
 				<option value="10000">10,000</option>

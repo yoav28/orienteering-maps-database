@@ -59,4 +59,13 @@ function getCountries() {
 }
 
 
-export { getEvents, getCountries };
+function getEventById(id: number) {
+    const query = `SELECT id, lat, lon, name, date, country, map
+                        FROM events
+                        WHERE id = ?`;
+    const stmt = db.prepare(query);
+    return stmt.get(id);
+}
+
+
+export { getEvents, getCountries, getEventById };
