@@ -1,7 +1,6 @@
 "use client";
 
 import React, {RefAttributes, useEffect, useState} from 'react';
-import {useUserLocation} from '@/app/hooks/useUserLocation';
 import {Filters} from '@/app/components/Filters';
 import {MapContainerProps} from 'react-leaflet';
 import Marks from '@/app/components/Marks';
@@ -21,22 +20,28 @@ const [MapContainer, TileLayer] = [
 
 
 export default function Map() {
-	const {center, country} = useUserLocation();
+	const [center, setCenter] = useState<[number, number] | null>(null);
 	const [filter, setFilter] = useState<FilterState>({
-		country: country,
+		country: null,
 		since: "2000-01-01",
 		limit: 10000,
 	});
-	
+
 	useEffect(() => {
-		console.log(country);
-		
-		if (country)
-			setFilter((prev) => ({
-				...prev,
-				country: country,
-			}));
-	}, [country]);
+		const fetchLocation = async () => {
+			const response = await fetch('/api/location');
+			const data = await response.json();
+
+			if (data.latitude && data.longitude)
+				setCenter([data.latitude, data.longitude]);
+	  
+			
+			if (data.country) {
+				setFilter((prev) => ({...prev, country: data.country}));
+			}
+		};
+		fetchLocation();
+	}, []);
 
 	if (center === null) return <span>Loading...</span>;
 	
