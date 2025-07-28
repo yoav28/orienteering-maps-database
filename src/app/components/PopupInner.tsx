@@ -29,6 +29,34 @@ export default function PopupInner({id}: { id: number }) {
 		}
 	};
 
+	const download = async () => {
+		if (!event || !event.map)
+			return
+
+		try {
+			const response = await fetch(event.map, {mode: 'cors'});
+			
+			const blob = await response.blob();
+			const url = URL.createObjectURL(blob);
+
+			const link = document.createElement('a');
+			
+			link.href = url;
+			link.download = `${event.name || 'map'}.png`;
+			document.body.appendChild(link);
+			link.click();
+			
+			document.body.removeChild(link);
+			URL.revokeObjectURL(url);
+		} 
+		
+		catch (error) {
+			console.error("Download failed", error);
+			alert("Unable to download image.");
+		}
+	};
+
+
 
 	if (!event) return null;
 
@@ -37,5 +65,7 @@ export default function PopupInner({id}: { id: number }) {
 		<span>{event.date}</span><br/>
 
 		<img src={event.map} alt={event.name} onClick={open}/>
+
+		<button onClick={download}>Download</button>
 	</div>
 }

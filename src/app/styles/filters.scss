@@ -3,50 +3,44 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	width: 100%;
 	margin-bottom: 10px;
-	gap: 10px 15px;
+	gap: 10px 20px;
+	width: 100%;
 
 	> div {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: 8px;
 
 		label {
 			font-size: 16px;
 			font-weight: 600;
 		}
 
-		select,
-		input {
+		select {
 			font-size: 16px;
 			font-weight: 500;
 			border: 1px solid #ccc;
 			border-radius: 5px;
 			background-color: #f9f9f9;
-			color: #111;
-			padding: 5px;
 			cursor: pointer;
+			color: #111;
+
+
+		}
+		
+		select {
+			padding: 6px 8px;
+			border-radius: 6px;
+			border: 1px solid #ccc;
+			background-color: #f9f9f9;
+			color: #111;
+			appearance: none;
+			-webkit-appearance: none;
 
 			&:focus {
 				outline: none;
 			}
-		}
-	}
-
-	.theme-toggle-button {
-		background: none;
-		border: none;
-		padding: 5px;
-		border-radius: 50%;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: background-color 0.2s;
-
-		&:hover {
-			background-color: rgba(0, 0, 0, 0.1);
 		}
 	}
 }
@@ -54,8 +48,57 @@
 
 .filter-toggle-button {
 	display: none;
+}
 
-	@media (max-width: 768px) {
+
+.filter-sidebar {
+	display: none;
+}
+
+
+.close-sidebar-button {
+	display: none;
+}
+
+
+.theme-toggle-button {
+	padding: 5px;
+	border: none;
+	display: flex;
+	cursor: pointer;
+	background: none;
+	border-radius: 50%;
+	align-items: center;
+	justify-content: center;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.1);
+	}
+}
+
+
+body[data-theme='dark'] {
+	.filters > div > select {
+		color: #eee;
+		border-color: #555;
+		background-color: #333;
+	}
+
+	.theme-toggle-button {
+		img {
+			filter: invert(1);
+		}
+
+		&:hover {
+			background-color: rgba(255, 255, 255, 0.1);
+		}
+	}
+}
+
+
+@media (max-width: 768px) {
+
+	.filter-toggle-button {
 		display: block;
 		position: fixed;
 		top: 10px;
@@ -68,28 +111,34 @@
 		border-radius: 5px;
 		cursor: pointer;
 	}
-}
 
-.filter-sidebar {
-	z-index: 10000 !important;
+	.filters {
+		display: none;
+	}
 
-	@media (max-width: 768px) {
-		position: fixed;
+	.filter-sidebar.open {
+		left: 0;
+	}
+	
+	.filter-sidebar {
 		top: 0;
 		left: -300px;
 		width: 250px;
 		height: 100%;
 		padding: 20px;
+		z-index: 1001;
+		display: flex;
+		position: fixed;
+		overflow-y: auto;
+		transition: left 0.5s ease-in-out;
 		background-color: var(--background);
 		box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-		transition: left 0.3s ease-in-out;
-		overflow-y: auto;
-		z-index: 1000;
-
+		
 		.filters {
 			flex-direction: column;
-			gap: 15px;
 			margin: 50px 0 0 0;
+			display: flex;
+			gap: 15px;
 
 			> div {
 				width: 100%;
@@ -102,29 +151,16 @@
 					font-weight: 500;
 				}
 
-				select,
-				input {
+				select {
 					width: 60%;
 					font-size: 14px;
 					padding: 5px;
 				}
 			}
-
-			.theme-toggle-button {
-				display: none;
-			}
 		}
 	}
-}
 
-.filter-sidebar.open {
-	left: 0;
-}
-
-.close-sidebar-button {
-	display: none;
-
-	@media (max-width: 768px) {
+	.close-sidebar-button {
 		display: block;
 		position: absolute;
 		top: 10px;
@@ -135,65 +171,8 @@
 		cursor: pointer;
 		color: var(--foreground);
 	}
-}
 
-body[data-theme='dark'] {
-	.filters {
-		> div {
-			select,
-			input {
-				background-color: #333;
-				color: #eee;
-				border-color: #555;
-			}
-		}
-
-		.theme-toggle-button {
-			img {
-				filter: invert(1);
-			}
-
-			&:hover {
-				background-color: rgba(255, 255, 255, 0.1);
-			}
-		}
-	}
-}
-
-@media (min-width: 769px) {
-	.filter-sidebar {
-		position: static;
-		width: auto;
-		height: auto;
-		padding: 0;
-		box-shadow: none;
-		overflow-y: visible;
-
-		.filters {
-			flex-direction: row;
-			gap: 10px 15px;
-			margin-bottom: 10px;
-
-			> div {
-				width: auto;
-				align-items: flex-start;
-				gap: 10px;
-
-				label {
-					font-size: 16px;
-					font-weight: 600;
-				}
-
-				select,
-				input {
-					font-size: 16px;
-					padding: 5px;
-				}
-			}
-
-			.theme-toggle-button {
-				display: none !important;
-			}
-		}
-	}
+	.theme-toggle-button {
+		display: none;
+	}	
 }

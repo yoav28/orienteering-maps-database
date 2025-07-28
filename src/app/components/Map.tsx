@@ -9,6 +9,13 @@ import {Map as LeafletMap} from 'leaflet';
 import {FilterState} from '@/app/types';
 import dynamic from 'next/dynamic';
 
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet/dist/leaflet.css';
+import "../styles/skeleton.scss";
+import "../styles/filters.scss";
+import "../styles/popup.scss";
+import "../styles/app.scss";
 
 
 const [MapContainer, TileLayer, Marks] = [
@@ -22,8 +29,9 @@ const [MapContainer, TileLayer, Marks] = [
 
 
 export default function Map() {
-	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [center, setCenter] = useState<[number, number] | null>(null);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [filter, setFilter] = useState<FilterState>({
 		country: null,
 		since: "2000-01-01",
@@ -78,12 +86,8 @@ export default function Map() {
 		fetchCountryCoordinates(filter.country);
 	}, [filter.country, map]);
 
+	
 
-	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-	const toggleSidebar = () => {
-		setIsSidebarOpen(!isSidebarOpen);
-	};
 
 
 	if (center === null) return <Skeleton />;
@@ -111,12 +115,14 @@ export default function Map() {
 
 	return (
 		<div className="container">
-			<button className="filter-toggle-button" onClick={toggleSidebar}>
+			<button className="filter-toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
 				Filters
 			</button>
 
+			<Filters filter={filter} setFilter={setFilter} setIsSidebarOpen={setIsSidebarOpen}/>
+
 			<div className={`filter-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-				<button className="close-sidebar-button" onClick={toggleSidebar}>&times;</button>
+				<button className="close-sidebar-button" onClick={() => setIsSidebarOpen(false)}>&times;</button>
 				<Filters filter={filter} setFilter={setFilter} setIsSidebarOpen={setIsSidebarOpen}/>
 			</div>
 

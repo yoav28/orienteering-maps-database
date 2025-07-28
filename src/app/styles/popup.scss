@@ -1,6 +1,15 @@
 
 $popup-size: 300px;
 
+// return <div className="popup-inner">
+//		<b>{event.id} {event.name}</b><br/><br/>
+//		<span>{event.date}</span><br/>
+//
+//		<img src={event.map} alt={event.name} onClick={open}/>
+//
+//		<button onClick={download}>Download</button>
+//	</div>
+
 .popup {
 	width: $popup-size;
 	max-width: 80vw;
@@ -22,17 +31,35 @@ $popup-size: 300px;
 	img {
 		width: 100%;
 		border-radius: 5px;
+		margin-top: 5px;
 		cursor: pointer;
+	}
+
+	button {
+		width: 100%;
+		color: #fff;
+		padding: 8px;
+		border: none;
+		font-size: 14px;
+		cursor: pointer;
+		margin-top: 10px;
+		border-radius: 5px;
+		background-color: forestgreen;
 	}
 }
 
+
 body[data-theme='dark'] {
+	.popup > div:first-child {
+		background-color: #222;
+	}
+	
 	.popup-inner {
 		background-color: #222;
 		color: #eee;
 
 		span {
-			color: #aaa;
+			color: #ccc;
 		}
 	}
 }
