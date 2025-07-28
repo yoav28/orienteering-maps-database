@@ -23,20 +23,18 @@ interface MarksProps {
 
 
 export default function Marks({country, since, limit, source, name}: MarksProps) {
-	const [renderedMarkers, setRenderedMarkers] = useState<ReactNode[]>([]);
 	const [events, setEvents] = useState<LocationType[]>([]);
+	const [loading, setLoading] = useState(true);
 
-	
 	useEffect(() => {
 		if (country) {
 			fetchEvents();
 		}
-	}, [country, since, limit, source]);
+	}, [country, since, limit, source, name]);
 
 
 	const fetchEvents = async () => {
-		console.log(country);
-		
+		setLoading(true);
 		const params = new URLSearchParams({
 			limit: (limit || 999999).toString(),
 			country: country || "",
@@ -48,12 +46,16 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 
 		const response = await fetch(`/api/maps?${params}`);
 
-		if (!response.ok)
-			return console.error("Failed to fetch events:", response.statusText);
+		if (!response.ok) {
+			console.error("Failed to fetch events:", response.statusText);
+			setLoading(false);
+			return;
+		}
 		
 		const data = await response.json();
 
 		setEvents(data as LocationType[]);
+		setLoading(false);
 	};
 
 
@@ -84,34 +86,15 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 		</CircleMarker>
 	}), [events]);
 	
-	
+	if (loading) {
+		return <div className="loading-indicator">Loading maps...</div>;
+	}
 
-	useEffect(() => {
-		setRenderedMarkers([]);
+	if (events.length === 0) {
+		return <div className="empty-state-message">No maps found for the selected filters.</div>;
+	}
 
-		if (allMarkers.length > 0) {
-			const chunkSize = 500;
-
-			const renderChunk = (index = 0) => {
-				const chunk = allMarkers.slice(index, index + chunkSize);
-
-				if (chunk.length > 0) {
-					setRenderedMarkers((prev) => {
-						const existingIds = new Set(prev.map((m: any) => m.key));
-						const newMarkers = chunk.filter((m: any) => !existingIds.has(m.key));
-						return [...prev, ...newMarkers];
-					});
-
-					setTimeout(() => renderChunk(index + chunkSize), 150);
-				}
-			};
-			renderChunk();
-		}
-	}, [allMarkers]);
-
-	
-	
 	return <MarkerClusterGroup>
-		{renderedMarkers}
+		{allMarkers}
 	</MarkerClusterGroup>
 }

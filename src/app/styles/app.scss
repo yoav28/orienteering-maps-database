@@ -29,6 +29,19 @@ body {
 	border-radius: 5px;
 }
 
+.loading-indicator,
+.empty-state-message {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	font-size: 1.2em;
+	color: var(--foreground);
+	background-color: var(--background);
+	border-radius: 5px;
+}
+
 .popup-overlay {
 	top: 0;
 	left: 0;

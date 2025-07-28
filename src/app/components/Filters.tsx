@@ -26,8 +26,8 @@ export function Filters({filter, setFilter, setIsSidebarOpen}: FiltersProps) {
 	};
 
 
-	return <div className="filters">
-		<button onClick={toggleTheme} className="theme-toggle-button">
+	return <div className="filters" role="region" aria-label="Map Filters">
+		<button onClick={toggleTheme} className="theme-toggle-button" aria-label={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}>
 			{theme === 'light' ? (
 				<Image src="/moon.svg" alt="Switch to Dark Mode" width={24} height={24}/>
 			) : (

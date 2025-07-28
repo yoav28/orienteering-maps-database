@@ -7,7 +7,7 @@ interface DisclaimerPopupProps {
 
 
 export default function DisclaimerPopup({onClose}: DisclaimerPopupProps) {
-	return <div className="popup-overlay">
+	return <div className="popup-overlay" role="dialog" aria-modal="true">
 		<div className="popup-content">
 			<img src="/icon.png" alt="Icon"/>
 			<span>
@@ -18,9 +18,7 @@ export default function DisclaimerPopup({onClose}: DisclaimerPopupProps) {
             </span>
 
 
-			<button onClick={onClose} className="popup-close-button">
-				I understand
-			</button>
+			<button onClick={onClose} className="popup-close-button" aria-label="Close disclaimer">I understand</button>
 		</div>
 	</div>
 };

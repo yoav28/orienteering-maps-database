@@ -171,18 +171,18 @@ export default function Map() {
 
 	return (
 		<div className="container">
-			<button className="filter-toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+			<button className="filter-toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-expanded={isSidebarOpen} aria-controls="filter-sidebar">
 				Filters
 			</button>
 
 			<Filters filter={filter} setFilter={setFilter} setIsSidebarOpen={setIsSidebarOpen}/>
 
-			<div className={`filter-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-				<button className="close-sidebar-button" onClick={() => setIsSidebarOpen(false)}>&times;</button>
+			<div id="filter-sidebar" className={`filter-sidebar ${isSidebarOpen ? 'open' : ''}`} role="dialog" aria-modal="true">
+				<button className="close-sidebar-button" onClick={() => setIsSidebarOpen(false)} aria-label="Close sidebar">&times;</button>
 				<Filters filter={filter} setFilter={setFilter} setIsSidebarOpen={setIsSidebarOpen}/>
 			</div>
 
-			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap}>
+			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap} aria-label="Orienteering Maps">
 				<Tile/>
 
 				<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source} name={filter.name}/>

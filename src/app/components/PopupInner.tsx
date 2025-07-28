@@ -64,8 +64,8 @@ export default function PopupInner({id}: { id: number }) {
 		<b>{event.id} {event.name}</b><br/><br/>
 		<span>{event.date}</span><br/>
 
-		<img src={event.map} alt={event.name} onClick={open}/>
+		<img src={event.map} alt={`Map for ${event.name}`} onClick={open}/>
 
-		<button onClick={download}>Download</button>
+		<button onClick={download} aria-label={`Download map for ${event.name}`}>Download</button>
 	</div>
 }
