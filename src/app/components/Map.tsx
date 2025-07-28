@@ -27,14 +27,20 @@ const [MapContainer, TileLayer, Marks] = [
 ];
 
 
+const daysBack = (days: number) => {
+	const date = new Date(Date.now() - days * 1000 * 60 * 60 * 24);
+	return date.toISOString().split('T')[0];
+};
+
+
 
 export default function Map() {
 	const [center, setCenter] = useState<[number, number] | null>(null);
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [filter, setFilter] = useState<FilterState>({
+		since: daysBack(365 * 5), // Default to 5 years back
 		country: null,
-		since: "2000-01-01",
 		limit: 999999,
 		source: "all",
 		name: null,
@@ -42,10 +48,12 @@ export default function Map() {
 	});
 	const { theme } = useTheme();
 
+
 	useEffect(() => {
 		document.body.setAttribute('data-theme', theme);
 	}, [theme]);
 
+	
 	useEffect(() => {
 		const fetchLocation = async () => {
 			try {
@@ -175,11 +183,11 @@ export default function Map() {
 				Filters
 			</button>
 
-			<Filters filter={filter} setFilter={setFilter} setIsSidebarOpen={setIsSidebarOpen}/>
+			<Filters daysBack={daysBack} filter={filter} setFilter={setFilter}/>
 
 			<div id="filter-sidebar" className={`filter-sidebar ${isSidebarOpen ? 'open' : ''}`} role="dialog" aria-modal="true">
 				<button className="close-sidebar-button" onClick={() => setIsSidebarOpen(false)} aria-label="Close sidebar">&times;</button>
-				<Filters filter={filter} setFilter={setFilter} setIsSidebarOpen={setIsSidebarOpen}/>
+				<Filters daysBack={daysBack} filter={filter} setFilter={setFilter}/>
 			</div>
 
 			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap} aria-label="Orienteering Maps">

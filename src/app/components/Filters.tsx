@@ -10,20 +10,14 @@ import {FilterState} from '@/app/types';
 
 interface FiltersProps {
 	filter: FilterState;
+	daysBack: (days: number) => string;
 	setFilter: React.Dispatch<React.SetStateAction<FilterState>>;
-	setIsSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
-export function Filters({filter, setFilter, setIsSidebarOpen}: FiltersProps) {
+export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 	const countries = useCountries();
 	const { theme, toggleTheme } = useTheme();
-
-
-	const daysBack = (days: number) => {
-		const date = new Date(Date.now() - days * 1000 * 60 * 60 * 24);
-		return date.toISOString().split('T')[0];
-	};
 
 
 	return <div className="filters" role="region" aria-label="Map Filters">
@@ -52,7 +46,7 @@ export function Filters({filter, setFilter, setIsSidebarOpen}: FiltersProps) {
 
 		<div>
 			<label htmlFor="since">Time Frame:</label>
-			<select id="since" name="since" defaultValue={daysBack(365 * 2)} 
+			<select id="since" name="since" defaultValue={daysBack(365 * 5)} 
 			        onChange={(e) => {
 										const value = e.target.value;
 					setFilter((prev) => ({...prev, since: value}));
