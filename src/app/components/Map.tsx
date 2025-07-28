@@ -1,26 +1,24 @@
 "use client";
 
 import React, {RefAttributes, useEffect, useState} from 'react';
+import {Skeleton} from '@/app/components/Skeleton';
+import {useTheme} from '../context/ThemeContext';
 import {Filters} from '@/app/components/Filters';
 import {MapContainerProps} from 'react-leaflet';
-const Marks = dynamic(() => import('@/app/components/Marks'), { ssr: false });
 import {Map as LeafletMap} from 'leaflet';
 import {FilterState} from '@/app/types';
 import dynamic from 'next/dynamic';
-import {Skeleton} from '@/app/components/Skeleton';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import "../app.scss";
-import { useTheme } from '../context/ThemeContext';
 
 
-const [MapContainer, TileLayer] = [
+
+const [MapContainer, TileLayer, Marks] = [
 	dynamic<MapContainerProps & RefAttributes<LeafletMap>>(
 		() => import('react-leaflet').then((mod) => mod.MapContainer), {ssr: false}
 	),
 	dynamic(() => import('react-leaflet').then((mod) => mod.TileLayer), {ssr: false}),
+	dynamic(() => import('@/app/components/Marks'), {ssr: false})
 ];
+
 
 
 export default function Map() {
@@ -90,22 +88,26 @@ export default function Map() {
 
 	if (center === null) return <Skeleton />;
 
+
+	const Tile = () => {
 		const tileLayers = {
-		light: {
-			road: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-			satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-			topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-		},
-		dark: {
-			road: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-			satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-			topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
-		}
+			light: {
+				road: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+				satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+				topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+			},
+			dark: {
+				road: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+				satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+				topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+			}
+		} as { [theme: string]: { [style: string]: string } };
+
+		const url = tileLayers[theme][filter.mapStyle] || tileLayers.light.road;
+		
+		return <TileLayer url={url}/>
 	};
 
-	const getTileLayerUrl = () => {
-		return tileLayers[theme][filter.mapStyle] || tileLayers[theme].road;
-	};
 
 	return (
 		<div className="container">
@@ -119,7 +121,7 @@ export default function Map() {
 			</div>
 
 			<MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap}>
-				<TileLayer url={getTileLayerUrl()}/>
+				<Tile/>
 
 				<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source} name={filter.name}/>
 			</MapContainer>

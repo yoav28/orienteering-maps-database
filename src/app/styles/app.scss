@@ -1,0 +1,30 @@
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: "Segoe UI", Arial, Helvetica, Verdana, sans-serif,
+	"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	background-color: var(--background);
+	color: var(--foreground);
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 20px;
+	height: 100vh;
+	width: 100%;
+	gap: 10px;
+
+	@media (max-width: 768px) {
+		padding: 10px;
+	}
+}
+
+.map {
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;
+}

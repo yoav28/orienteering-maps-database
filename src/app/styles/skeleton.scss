@@ -1,0 +1,23 @@
+
+.skeleton-filters {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 50px;
+	gap: 20px;
+}
+
+.skeleton-filter-item, .skeleton-map {
+	border-radius: 5px;
+	background: #e0e0e0;
+}
+
+.skeleton-filter-item {
+	width: 200px;
+	height: 35px;
+}
+
+.skeleton-map {
+	width: 100%;
+	height: 100%;
+}
