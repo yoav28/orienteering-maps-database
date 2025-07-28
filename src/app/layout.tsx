@@ -5,31 +5,27 @@ import "./globals.scss";
 
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Orienteering Maps Database",
-  description: "A database of orienteering maps",
-  icons: {
-    icon: "/icon.ico",
-  },
+    title: "Orienteering Maps Database",
+    description: "A database of orienteering maps",
+    icons: {
+        icon: "/icon.ico",
+    },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`} style={{isolation: "isolate"}}>
-        <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>{children}</ThemeProvider>
       </body>
-    </html>
+  </html>
 }
