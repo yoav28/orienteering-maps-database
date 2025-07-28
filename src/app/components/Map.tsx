@@ -130,7 +130,7 @@ export default function Map() {
 				if (data && data.length > 0) {
 					const { lat, lon } = data[0];
 					const newCenter: [number, number] = [parseFloat(lat), parseFloat(lon)];
-					map.flyTo(newCenter, 6);
+					map.flyTo(newCenter, 5);
 				}
 			} 
 			
