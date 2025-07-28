@@ -17,7 +17,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Orienteering Maps Database",
   description: "A database of orienteering maps",
-  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: "/icon.ico",
   },
