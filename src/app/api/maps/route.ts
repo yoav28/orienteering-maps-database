@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   }
   
 
-  const maps = getMaps(country, limit, since, source.toLowerCase(), name);
+  const maps = getMaps(country, limit, since, source.toLowerCase());
   
   return new Response(JSON.stringify(maps), {
     headers: { 'content-type': 'application/json' },
