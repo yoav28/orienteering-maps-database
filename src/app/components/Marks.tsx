@@ -1,7 +1,8 @@
 "use client";
 
-import React, {ReactNode, useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import PopupInner from "@/app/components/PopupInner";
+import {isMobile} from 'react-device-detect';
 import {LocationType} from "@/app/types";
 import dynamic from "next/dynamic";
 
@@ -15,16 +16,17 @@ const [CircleMarker, Popup, MarkerClusterGroup] = [
 
 interface MarksProps {
 	country: string | null;
+	name: string | null;
 	source: string;
 	since: string;
 	limit: number;
-	name: string | null;
 }
 
 
 export default function Marks({country, since, limit, source, name}: MarksProps) {
 	const [events, setEvents] = useState<LocationType[]>([]);
 	const [loading, setLoading] = useState(true);
+	const markerSize = isMobile ? 7 : 4;
 
 	useEffect(() => {
 		if (country) {
@@ -79,7 +81,7 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 			return "black";
 		}
 
-		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: getColor(mark.source), fillOpacity: 0}} radius={3}>
+		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: getColor(mark.source)}} radius={markerSize}>
 			<Popup className="popup">
 				<PopupInner id={mark.id}/>
 			</Popup>

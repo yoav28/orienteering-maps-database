@@ -1,5 +1,6 @@
 "use client";
 
+import {isDesktop} from 'react-device-detect';
 import {useEffect, useState} from "react";
 import {Event} from "@/app/types";
 
@@ -56,16 +57,25 @@ export default function PopupInner({id}: { id: number }) {
 		}
 	};
 
-
-
 	if (!event) return null;
+	
+
+
+	const Button = () => {
+		if (isDesktop)
+			return <button onClick={download} aria-label={`Download map for ${event.name}`}>Download</button>;
+
+		return <button onClick={open} aria-label={`Open map for ${event.name}`}>Open</button>
+	}
+
+
 
 	return <div className="popup-inner">
 		<b>{event.id} {event.name}</b><br/><br/>
 		<span>{event.date}</span><br/>
 
 		<img src={event.map} alt={`Map for ${event.name}`} onClick={open}/>
-
-		<button onClick={download} aria-label={`Download map for ${event.name}`}>Download</button>
+		
+		<Button/>
 	</div>
 }
