@@ -57,11 +57,19 @@ export default function PopupInner({id}: { id: number }) {
 		}
 	};
 
+
 	if (!event) return null;
-	
 
 
-	const Button = () => {
+	const googleMaps = () => {
+		const {lon, lat} = event;
+
+		const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+		window.open(url, '_blank');
+	};
+
+
+	const DownloadOrOpen = () => {
 		if (isDesktop)
 			return <button onClick={download} aria-label={`Download map for ${event.name}`}>Download</button>;
 
@@ -75,7 +83,8 @@ export default function PopupInner({id}: { id: number }) {
 		<span>{event.date}</span><br/>
 
 		<img src={event.map} alt={`Map for ${event.name}`} onClick={open}/>
-		
-		<Button/>
+
+		<DownloadOrOpen/>
+		<button onClick={googleMaps} aria-label="Google Maps">Google Maps</button>
 	</div>
 }
