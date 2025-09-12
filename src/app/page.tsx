@@ -9,7 +9,7 @@ export default function Home() {
     const [showDisclaimer, setShowDisclaimer] = useState(false);
 
     useEffect(() => {
-        setShowDisclaimer(true);
+        // setShowDisclaimer(true);
     }, []);
 
 

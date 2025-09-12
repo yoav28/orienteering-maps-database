@@ -14,6 +14,7 @@ export default function PopupInner({id}: { id: number }) {
 			const response = await fetch(`/api/events/${id}`);
 			if (response.ok) {
 				const data = await response.json();
+				console.log(data)
 				setEvent(data);
 			} else {
 				console.error("Failed to fetch event");
@@ -67,6 +68,16 @@ export default function PopupInner({id}: { id: number }) {
 		const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
 		window.open(url, '_blank');
 	};
+	
+	
+	const EventUrl = () => {
+		const {event_url} = event;
+		
+		if (!event_url)
+			return null;
+
+		return <button onClick={() => window.open(event_url, '_blank')} aria-label="Open event Url">Livelox</button>
+	}
 
 
 	const DownloadOrOpen = () => {
@@ -85,6 +96,9 @@ export default function PopupInner({id}: { id: number }) {
 		<img src={event.map} alt={`Map for ${event.name}`} onClick={open}/>
 
 		<DownloadOrOpen/>
+		
 		<button onClick={googleMaps} aria-label="Google Maps">Google Maps</button>
+		
+		<EventUrl/>
 	</div>
 }

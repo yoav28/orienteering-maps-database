@@ -63,7 +63,9 @@ export const displayCountry = (country: string) => {
         "Puerto Rico": "🇵🇷",
         "Bosnia and Herzegovina": "🇧🇦",
         "South Africa": "🇿🇦",
-        "Faroe Islands": "🇫🇴"
+        "Faroe Islands": "🇫🇴",
+        "Andorra": "🇦🇩",
+        "Kazakhstan": "🇰🇿"
     };
     
     const emoji = emojis[country];

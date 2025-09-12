@@ -69,7 +69,7 @@ function getCountries() {
 
 
 function getEventById(id: number) {
-    const query = `SELECT id, lat, lon, name, date, country, map
+    const query = `SELECT id, lat, lon, name, date, country, map, event_url
                         FROM events
                         WHERE id = ?`;
     const stmt = db.prepare(query);

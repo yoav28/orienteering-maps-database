@@ -152,8 +152,6 @@ export default function Map() {
 
 	
 
-
-
 	if (center === null) return <Skeleton />;
 
 
@@ -177,8 +175,7 @@ export default function Map() {
 	};
 
 
-	return (
-		<div className="container">
+	return <div className="container">
 			<button className="filter-toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-expanded={isSidebarOpen} aria-controls="filter-sidebar">
 				Filters
 			</button>
@@ -196,5 +193,4 @@ export default function Map() {
 				<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source} name={filter.name}/>
 			</MapContainer>
 		</div>
-	);
 }

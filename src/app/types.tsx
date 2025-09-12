@@ -15,6 +15,7 @@ export type Event = {
 	name: string;
 	country: string;
 	class_id: number;
+	event_url: string | null;
 };
 
 export type FilterState = {
