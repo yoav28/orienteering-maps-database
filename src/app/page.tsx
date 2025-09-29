@@ -2,7 +2,7 @@
 
 import DisclaimerPopup from "@/app/components/DisclaimerPopup";
 import {useEffect, useState} from "react";
-import Map from "@/app/components/Map";
+import MapWrapper from "@/app/components/MapWrapper";
 
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
         <div>
             {showDisclaimer && <DisclaimerPopup onClose={() => setShowDisclaimer(false)}/>}
             
-            <Map/>
+            <MapWrapper/>
         </div>
     );
 }

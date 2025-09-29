@@ -20,7 +20,7 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 	const { theme, toggleTheme } = useTheme();
 
 
-	return <div className="filters" role="region" aria-label="Map Filters">
+	return <div className="filters" role="region" aria-label="MapWrapper Filters">
 		<button onClick={toggleTheme} className="theme-toggle-button" aria-label={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}>
 			{theme === 'light' ? (
 				<Image src="/moon.svg" alt="Switch to Dark Mode" width={24} height={24}/>
@@ -102,7 +102,7 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 		</div>
 
 		<div>
-			<label htmlFor="mapStyle">Map Style:</label>
+			<label htmlFor="mapStyle">MapWrapper Style:</label>
 			<select id="mapStyle" name="mapStyle" defaultValue={filter.mapStyle}
 			        onChange={(e) => {
 				        const value = e.target.value;

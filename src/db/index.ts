@@ -10,7 +10,7 @@ const db = new Database(dbPath);
 // - id: Unique identifier for the event (integer, auto-incrementing, primary key, NOT NULL)
 // - name: Name of the event (text)
 // - class_id: Class ID of the event (integer)
-// - map: Map associated with the event (text, can be NULL)
+// - map: MapWrapper associated with the event (text, can be NULL)
 // - lat: Latitude of the event (real)
 // - lon: Longitude of the event (real)
 // - date: Date of the event (text)
