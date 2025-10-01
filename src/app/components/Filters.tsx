@@ -17,7 +17,7 @@ interface FiltersProps {
 
 export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 	const countries = useCountries();
-	const { theme, toggleTheme } = useTheme();
+	const {theme, toggleTheme} = useTheme();
 
 
 	return <div className="filters" role="region" aria-label="MapWrapper Filters">
@@ -28,14 +28,13 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 				<Image src="/sun.svg" alt="Switch to Light Mode" width={24} height={24}/>
 			)}
 		</button>
-		
+
 		<div>
 			<label htmlFor="country">Country:</label>
-			<select id="country" name="country" value={filter.country ?? "Sweden"}
-			        onChange={(e) => {
-										const value = e.target.value;
-					setFilter((prev) => ({...prev, country: value}));
-				}}>
+			<select id="country" name="country" value={filter.country ?? "Sweden"} onChange={(e) => {
+				        const value = e.target.value;
+				        setFilter((prev) => ({...prev, country: value}));
+			        }}>
 				{countries.map((country) => (
 					<option key={country} value={country}>
 						{displayCountry(country)}
@@ -46,13 +45,11 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 
 		<div>
 			<label htmlFor="since">Time Frame:</label>
-			<select id="since" name="since" defaultValue={daysBack(365 * 5)} 
-			        onChange={(e) => {
-										const value = e.target.value;
-					setFilter((prev) => ({...prev, since: value}));
-				}}>
+			<select id="since" name="since" defaultValue={daysBack(365 * 5)} onChange={(e) => {
+				        const value = e.target.value;
+				        setFilter((prev) => ({...prev, since: value}));
+			        }}>
 				<option value="2000-01-01">All</option>
-				<option value={daysBack(30)}>Last 30 days</option>
 				<option value={daysBack(90)}>Last 90 days</option>
 				<option value={daysBack(365)}>Last year</option>
 				<option value={daysBack(365 * 2)}>Last 2 years</option>
@@ -63,35 +60,33 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 
 		<div>
 			<label htmlFor="limit">Limit:</label>
-			<select id="limit" name="limit" defaultValue={filter.limit}
-				onChange={(e) => {
-					const value = parseInt(e.target.value, 10);
-					setFilter((prev) => ({...prev, limit: isNaN(value) ? 999999 : value}));
-				}}>
+			<select id="limit" name="limit" defaultValue={filter.limit} onChange={(e) => {
+				        const value = parseInt(e.target.value, 10);
+				        setFilter((prev) => ({...prev, limit: isNaN(value) ? 999999 : value}));
+			        }}>
 				<option value="999999">No Limit</option>
 				<option value="1000">1,000</option>
 				<option value="10000">10,000</option>
 				<option value="50000">50,000</option>
 			</select>
 		</div>
-		
+
 		<div>
 			<label htmlFor="source">Source:</label>
-			<select id="source" name="source" defaultValue={filter.source}
-			        onChange={(e) => {
-					const value = e.target.value;
-					
-					if (value === "omaps-au")
-						return setFilter((prev) => ({...prev, country: "Australia", source: value}));
-					
-					if (value === "omaps-no")
-						return setFilter((prev) => ({...prev, country: "Norway", source: value}));
-					
-					if (value === "omaps")
-						return setFilter((prev) => ({...prev, country: "Sweden", source: value}));
-					
-					setFilter((prev) => ({...prev, source: value}));
-				}}>
+			<select id="source" name="source" defaultValue={filter.source} onChange={(e) => {
+				        const value = e.target.value;
+
+				        if (value === "omaps-au")
+					        return setFilter((prev) => ({...prev, country: "Australia", source: value}));
+
+				        if (value === "omaps-no")
+					        return setFilter((prev) => ({...prev, country: "Norway", source: value}));
+
+				        if (value === "omaps")
+					        return setFilter((prev) => ({...prev, country: "Sweden", source: value}));
+
+				        setFilter((prev) => ({...prev, source: value}));
+			        }}>
 				<option value="all">All</option>
 				<option value="livelox">Livelox</option>
 				<option value="loggator">Loggator</option>
@@ -102,9 +97,8 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 		</div>
 
 		<div>
-			<label htmlFor="mapStyle">MapWrapper Style:</label>
-			<select id="mapStyle" name="mapStyle" defaultValue={filter.mapStyle}
-			        onChange={(e) => {
+			<label htmlFor="mapStyle">Map Style:</label>
+			<select id="mapStyle" name="mapStyle" defaultValue={filter.mapStyle} onChange={(e) => {
 				        const value = e.target.value;
 				        setFilter((prev) => ({...prev, mapStyle: value}));
 			        }}>

@@ -1,3 +1,8 @@
+import {MapContainerProps} from "react-leaflet";
+import {RefAttributes} from "react";
+import {Map as LeafletMap} from "leaflet";
+
+
 export type LocationType = {
 	id: number;
 	lat: number;
@@ -26,3 +31,5 @@ export type FilterState = {
 	mapStyle: string;
 	name: string | null;
 };
+
+export type MapContainerType = MapContainerProps & RefAttributes<LeafletMap>;

@@ -6,10 +6,6 @@ import {Filters} from '@/app/components/Filters';
 import {Map as LeafletMap} from 'leaflet';
 import {FilterState} from '@/app/types';
 import Map from "@/app/components/Map";
-
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet/dist/leaflet.css';
 import "../styles/skeleton.scss";
 import "../styles/filters.scss";
 import "../styles/popup.scss";
@@ -27,14 +23,13 @@ export default function MapWrapper() {
 	const [isSidebarOpen, setisSidebarOpen] = useState(false);
 	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [filter, setFilter] = useState<FilterState>({
-		since: daysBack(365 * 0), // Default to 5 years back
+		since: daysBack(365 * 5), // Default to 5 years back
+		mapStyle: "road",
 		country: null,
 		limit: 999999,
 		source: "all",
-		name: null,
-		mapStyle: "road"
+		name: null
 	});
-
 
 	
 	useEffect(() => {
@@ -152,6 +147,6 @@ export default function MapWrapper() {
 			<Filters daysBack={daysBack} filter={filter} setFilter={setFilter}/>
 		</div>
 
-		<Map center={center} filter={filter} setMap={setMap}/>
+		<Map center={center} filter={filter} map={map} setMap={setMap}/>
 	</div>
 }

@@ -1,61 +1,81 @@
 "use client";
 
-import React, {RefAttributes, useEffect} from "react";
+const MapContainer = dynamic<MapContainerType>(() => import("react-leaflet").then((mod) => mod.MapContainer), {ssr: false});
+import {FilterState, MapContainerType} from "@/app/types";
 import {useTheme} from "@/app/context/ThemeContext";
-import {MapContainerProps} from "react-leaflet";
+import {LocateControl} from "leaflet.locatecontrol";
+import React, {useEffect, useRef} from "react";
+import Marks from "@/app/components/Marks";
 import {Map as LeafletMap} from "leaflet";
-import {FilterState} from "@/app/types";
+import Tile from "@/app/components/Tile";
 import dynamic from "next/dynamic";
 
 
-const [MapContainer, TileLayer, Marks] = [
-	dynamic<MapContainerProps & RefAttributes<LeafletMap>>(() => import('react-leaflet').then((mod) => mod.MapContainer), {ssr: false}),
-
-	dynamic(() => import('react-leaflet').then((mod) => mod.TileLayer), {ssr: false}),
-
-	dynamic(() => import('@/app/components/Marks'), {ssr: false})
-];
+import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet/dist/leaflet.css";
 
 
-const Tile = ({filter, theme}: {filter: FilterState, theme: string}) => {
-	const tileLayers = {
-		light: {
-			road: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-			satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-			topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-		},
-		dark: {
-			road: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-			satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-			topographic: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
-		}
-	} as { [theme: string]: { [style: string]: string } };
 
-	const url = tileLayers[theme][filter.mapStyle] || tileLayers.light.road;
-
-	return <TileLayer url={url}/>
-};
 
 
 interface Props {
 	setMap: (map: LeafletMap) => void;
 	center: [number, number];
+	map: LeafletMap | null;
 	filter: FilterState;
 }
 
 
-
-export default function Map({center, filter, setMap}: Props) {
+export default function Map({center, filter, map, setMap}: Props) {
 	const {theme} = useTheme();
+	const locateControlRef = useRef<LocateControl | null>(null);
 
 	useEffect(() => {
-		document.body.setAttribute('data-theme', theme);
+		document.body.setAttribute("data-theme", theme);
 	}, [theme]);
 
+	useEffect(() => {
+		if (!map || locateControlRef.current) return;
 
-	return <MapContainer className="map" center={center} zoom={2} scrollWheelZoom={false} ref={setMap} aria-label="Orienteering Maps">
-		<Tile filter={filter} theme={theme}/>
+		const control = new LocateControl({
+			flyTo: true,
+			drawCircle: true,
+			showCompass: true,
+			initialZoomLevel: 14,
+			locateOptions: {
+				enableHighAccuracy: true,
+			},
+		});
 
-		<Marks country={filter.country} since={filter.since} limit={filter.limit} source={filter.source} name={filter.name}/>
-	</MapContainer>
+		control.addTo(map);
+		locateControlRef.current = control;
+
+		return () => {
+			map.removeControl(control);
+			locateControlRef.current = null;
+		};
+	}, [map]);
+
+	return (
+		<MapContainer
+			className="map"
+			center={center}
+			zoom={2}
+			scrollWheelZoom={false}
+			ref={setMap}
+			aria-label="Orienteering Maps"
+		>
+			<Tile filter={filter} theme={theme}/>
+
+			<Marks
+				country={filter.country}
+				since={filter.since}
+				limit={filter.limit}
+				source={filter.source}
+				name={filter.name}
+			/>
+		</MapContainer>
+	);
 }

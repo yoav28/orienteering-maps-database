@@ -8,9 +8,9 @@ import dynamic from "next/dynamic";
 
 
 const [CircleMarker, Popup, MarkerClusterGroup] = [
-	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), { ssr: false }),
-	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false }),
-	dynamic(() => import('react-leaflet-markercluster').then(mod => mod.default), { ssr: false })
+	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), {ssr: false}),
+	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), {ssr: false}),
+	dynamic(() => import('react-leaflet-markercluster').then(mod => mod.default), {ssr: false})
 ];
 
 
@@ -42,7 +42,7 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 			country: country || "",
 			source: source,
 			since: since,
-			...(name && { name })
+			...(name && {name})
 		}).toString();
 
 
@@ -53,7 +53,7 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 			setLoading(false);
 			return;
 		}
-		
+
 		const data = await response.json();
 
 		setEvents(data as LocationType[]);
@@ -87,7 +87,7 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 			</Popup>
 		</CircleMarker>
 	}), [events]);
-	
+
 	if (loading) {
 		return <div className="loading-indicator">Loading maps...</div>;
 	}
