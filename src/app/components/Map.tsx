@@ -1,15 +1,12 @@
 "use client";
 
-const MapContainer = dynamic<MapContainerType>(() => import("react-leaflet").then((mod) => mod.MapContainer), {ssr: false});
+import dynamic from "next/dynamic";
 import {FilterState, MapContainerType} from "@/app/types";
 import {useTheme} from "@/app/context/ThemeContext";
-import {LocateControl} from "leaflet.locatecontrol";
 import React, {useEffect, useRef} from "react";
 import Marks from "@/app/components/Marks";
 import {Map as LeafletMap} from "leaflet";
 import Tile from "@/app/components/Tile";
-import dynamic from "next/dynamic";
-
 
 import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
@@ -17,7 +14,10 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet/dist/leaflet.css";
 
 
-
+const MapContainer = dynamic<MapContainerType>(
+	() => import("react-leaflet").then((mod) => mod.MapContainer),
+	{ssr: false}
+);
 
 
 interface Props {
@@ -30,7 +30,7 @@ interface Props {
 
 export default function Map({center, filter, map, setMap}: Props) {
 	const {theme} = useTheme();
-	const locateControlRef = useRef<LocateControl | null>(null);
+	const locateControlRef = useRef<any>(null);
 
 	useEffect(() => {
 		document.body.setAttribute("data-theme", theme);
@@ -39,22 +39,26 @@ export default function Map({center, filter, map, setMap}: Props) {
 	useEffect(() => {
 		if (!map || locateControlRef.current) return;
 
-		const control = new LocateControl({
-			flyTo: true,
-			drawCircle: true,
-			showCompass: true,
-			initialZoomLevel: 14,
-			locateOptions: {
-				enableHighAccuracy: true,
-			},
+		import("leaflet.locatecontrol").then(({LocateControl}) => {
+			const control = new LocateControl({
+				flyTo: true,
+				drawCircle: true,
+				showCompass: true,
+				initialZoomLevel: 14,
+				locateOptions: {
+					enableHighAccuracy: true,
+				},
+			});
+
+			control.addTo(map);
+			locateControlRef.current = control;
 		});
 
-		control.addTo(map);
-		locateControlRef.current = control;
-
 		return () => {
-			map.removeControl(control);
-			locateControlRef.current = null;
+			if (map && locateControlRef.current) {
+				map.removeControl(locateControlRef.current);
+				locateControlRef.current = null;
+			}
 		};
 	}, [map]);
 
