@@ -21,13 +21,13 @@ const db = new Database(dbPath);
 function getMaps(country: string, limit: string, since: string, source: string) {
     
     let query = `SELECT id, lat, lon, source
-                        FROM events
-                        WHERE map IS NOT NULL`;
+                 FROM events
+                 WHERE map IS NOT NULL`;
     
     
     const params: (string | number)[] = [];
 
-    if (country) {
+    if (country && country !== 'all') {
         query += ` AND country = ?`;
         params.push(country);
     }

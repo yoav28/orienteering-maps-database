@@ -8,8 +8,6 @@ export async function GET(request: Request) {
   const country = searchParams.get('country');
   const since = searchParams.get('since');
   const source = searchParams.get('source');
-  const name = searchParams.get('name');
-  
   
   if (!limit || !country || !since || !source) {
     return new Response(JSON.stringify({ error: 'Missing required parameters' }), {
@@ -17,7 +15,6 @@ export async function GET(request: Request) {
       headers: { 'content-type': 'application/json' },
     });
   }
-  
 
   const maps = getMaps(country, limit, since, source.toLowerCase());
   

@@ -40,6 +40,9 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 						{displayCountry(country)}
 					</option>
 				))}
+
+				{/*Just for testing, wasting too much ram*/}
+				<option value="all">All Countries</option>
 			</select>
 		</div>
 

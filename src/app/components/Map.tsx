@@ -14,10 +14,7 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet/dist/leaflet.css";
 
 
-const MapContainer = dynamic<MapContainerType>(
-	() => import("react-leaflet").then((mod) => mod.MapContainer),
-	{ssr: false}
-);
+const MapContainer = dynamic<MapContainerType>(() => import("react-leaflet").then((mod) => mod.MapContainer), {ssr: false});
 
 
 interface Props {
