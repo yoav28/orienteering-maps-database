@@ -10,23 +10,20 @@ const eventCache = new Map<number, Event>();
 interface EventDetailsPanelProps {
 	events: LocationType[];
 	selectedEventId: number | null;
-	onSelectEvent: (id: number) => void;
 	onClose: () => void;
 }
 
 
-export default function EventDetailsPanel({events, selectedEventId, onSelectEvent, onClose}: EventDetailsPanelProps) {
+export default function EventDetailsPanel({events, selectedEventId, onClose}: EventDetailsPanelProps) {
 	const [eventDetails, setEventDetails] = useState<Event | null>(null);
 	const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 	const [hasImageError, setHasImageError] = useState(false);
 
-	const selectedIndex = useMemo(
-		() => selectedEventId === null ? -1 : events.findIndex((event) => event.id === selectedEventId),
+	const selectedPreview = useMemo(
+		() => selectedEventId === null ? null : events.find((event) => event.id === selectedEventId) || null,
 		[events, selectedEventId]
 	);
-
-	const selectedPreview = selectedIndex >= 0 ? events[selectedIndex] : null;
 
 	useEffect(() => {
 		setIsImageLoaded(false);
@@ -93,15 +90,6 @@ export default function EventDetailsPanel({events, selectedEventId, onSelectEven
 	const eventUrl = eventDetails?.event_url || null;
 	const isLoadingImage = !!mapUrl && !isImageLoaded && !hasImageError;
 
-	const goToEventOffset = (offset: number) => {
-		const nextIndex = selectedIndex + offset;
-		if (nextIndex < 0 || nextIndex >= events.length) {
-			return;
-		}
-
-		onSelectEvent(events[nextIndex].id);
-	};
-
 	const openMap = () => {
 		if (!mapUrl) {
 			return;
@@ -148,16 +136,6 @@ export default function EventDetailsPanel({events, selectedEventId, onSelectEven
 
 			<button className="panel-close-button" onClick={onClose} aria-label="Close event details">
 				×
-			</button>
-		</div>
-
-		<div className="event-details-nav">
-			<button onClick={() => goToEventOffset(-1)} disabled={selectedIndex <= 0}>
-				Previous
-			</button>
-			<span>{selectedIndex + 1} / {events.length}</span>
-			<button onClick={() => goToEventOffset(1)} disabled={selectedIndex >= events.length - 1}>
-				Next
 			</button>
 		</div>
 

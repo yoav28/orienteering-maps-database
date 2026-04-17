@@ -46,31 +46,6 @@
 	color: inherit;
 }
 
-.event-details-nav {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-
-	span {
-		font-size: 13px;
-		opacity: 0.8;
-	}
-
-	button {
-		border: 1px solid rgba(15, 23, 42, 0.2);
-		border-radius: 999px;
-		background-color: transparent;
-		font-size: 12px;
-		padding: 4px 10px;
-		cursor: pointer;
-
-		&:disabled {
-			opacity: 0.5;
-			cursor: not-allowed;
-		}
-	}
-}
-
 .event-thumbnail {
 	position: relative;
 	border-radius: 8px;
@@ -145,11 +120,6 @@ body[data-theme='dark'] {
 	.event-details-panel {
 		border-color: rgba(148, 163, 184, 0.24);
 		background-color: rgba(2, 6, 23, 0.88);
-	}
-
-	.event-details-nav button {
-		color: #e2e8f0;
-		border-color: rgba(148, 163, 184, 0.24);
 	}
 
 	.event-thumbnail {

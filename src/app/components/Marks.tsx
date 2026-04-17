@@ -155,7 +155,6 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 		<EventDetailsPanel
 			events={events}
 			selectedEventId={selectedEventId}
-			onSelectEvent={selectEvent}
 			onClose={() => setSelectedEventId(null)}
 		/>
 	</>;
