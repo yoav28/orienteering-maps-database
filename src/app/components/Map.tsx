@@ -65,6 +65,7 @@ export default function Map({center, filter, map, setMap}: Props) {
 			center={center}
 			zoom={2}
 			scrollWheelZoom={false}
+			preferCanvas={true}
 			ref={setMap}
 			aria-label="Orienteering Maps"
 		>

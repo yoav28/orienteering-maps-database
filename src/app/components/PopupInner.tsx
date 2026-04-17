@@ -5,23 +5,47 @@ import {useEffect, useState} from "react";
 import {Event} from "@/app/types";
 
 
+const eventCache = new Map<number, Event>();
+
+
 export default function PopupInner({id}: { id: number }) {
 	const [event, setEvent] = useState<Event | null>(null);
 	
 	
 	useEffect(() => {
+		const cachedEvent = eventCache.get(id);
+		if (cachedEvent) {
+			setEvent(cachedEvent);
+			return;
+		}
+
+		const controller = new AbortController();
 		const fetchEvent = async () => {
-			const response = await fetch(`/api/events/${id}`);
-			if (response.ok) {
-				const data = await response.json();
-				console.log(data)
+			try {
+				const response = await fetch(`/api/events/${id}`, {signal: controller.signal});
+				if (!response.ok) {
+					console.error("Failed to fetch event");
+					return;
+				}
+
+				const data = await response.json() as Event;
+				eventCache.set(id, data);
 				setEvent(data);
-			} else {
-				console.error("Failed to fetch event");
+			}
+
+			catch (error) {
+				if (error instanceof DOMException && error.name === "AbortError")
+					return;
+
+				console.error("Failed to fetch event", error);
 			}
 		};
 
-		fetchEvent();
+		void fetchEvent();
+
+		return () => {
+			controller.abort();
+		};
 	}, [id]);
 	
 	
@@ -59,7 +83,8 @@ export default function PopupInner({id}: { id: number }) {
 	};
 
 
-	if (!event) return null;
+	if (!event)
+		return <div>Loading details...</div>;
 
 
 	const googleMaps = () => {

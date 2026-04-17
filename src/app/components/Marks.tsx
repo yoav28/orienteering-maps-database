@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useMemo, useState} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import PopupInner from "@/app/components/PopupInner";
 import {isMobile} from 'react-device-detect';
 import {LocationType} from "@/app/types";
@@ -12,6 +12,33 @@ const [CircleMarker, Popup, MarkerClusterGroup] = [
 	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), {ssr: false}),
 	dynamic(() => import('react-leaflet-markercluster').then(mod => mod.default), {ssr: false})
 ];
+
+
+const sourceColors: Record<string, string> = {
+	livelox: "red",
+	loggator: "orange",
+	omaps: "#005583",
+	"omaps-no": "#00205B",
+	"omaps-au": "#012169",
+};
+
+const getColor = (source: string) => sourceColors[source] || "black";
+
+
+const MarkerPopup = memo(function MarkerPopup({id}: { id: number }) {
+	const [hasOpened, setHasOpened] = useState(false);
+
+	return (
+		<Popup
+			className="popup"
+			eventHandlers={{
+				add: () => setHasOpened(true),
+			}}
+		>
+			{hasOpened ? <PopupInner id={id}/> : <div>Loading...</div>}
+		</Popup>
+	);
+});
 
 
 interface MarksProps {
@@ -29,74 +56,78 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 	const markerSize = isMobile ? 7 : 4;
 
 	useEffect(() => {
-		if (country) {
-			fetchEvents();
-		}
-	}, [country, since, limit, source, name]);
-
-
-	const fetchEvents = async () => {
-		setLoading(true);
-		const params = new URLSearchParams({
-			limit: (limit || 999999).toString(),
-			country: country || "",
-			source: source,
-			since: since,
-			...(name && {name})
-		}).toString();
-
-
-		const response = await fetch(`/api/maps?${params}`);
-
-		if (!response.ok) {
-			console.error("Failed to fetch events:", response.statusText);
-			setLoading(false);
+		if (!country) {
 			return;
 		}
 
-		const data = await response.json();
+		const controller = new AbortController();
+		const fetchEvents = async () => {
+			setLoading(true);
+			const params = new URLSearchParams({
+				limit: (limit || 999999).toString(),
+				country,
+				source,
+				since,
+				...(name && {name})
+			}).toString();
 
-		setEvents(data as LocationType[]);
-		setLoading(false);
-	};
+			try {
+				const response = await fetch(`/api/maps?${params}`, {signal: controller.signal});
+
+				if (!response.ok) {
+					console.error("Failed to fetch events:", response.statusText);
+					return;
+				}
+
+				const data = await response.json();
+				setEvents(data as LocationType[]);
+			}
+
+			catch (error) {
+				if (error instanceof DOMException && error.name === "AbortError")
+					return;
+
+				console.error("Failed to fetch events:", error);
+			}
+
+			finally {
+				if (!controller.signal.aborted)
+					setLoading(false);
+			}
+		};
+
+		void fetchEvents();
+
+		return () => {
+			controller.abort();
+		};
+	}, [country, since, limit, source, name]);
 
 
 	const allMarkers = useMemo(() => events.map((mark: LocationType) => {
-		const getColor = (source: string) => {
-			if (source === "livelox")
-				return "red";
-
-			if (source === "loggator")
-				return "orange";
-
-			if (source === "omaps")
-				return "#005583";
-
-			if (source === "omaps-no")
-				return "#00205B";
-
-			if (source === "omaps-au")
-				return "#012169";
-
-			return "black";
-		}
-
 		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: getColor(mark.source)}} radius={markerSize}>
-			<Popup className="popup">
-				<PopupInner id={mark.id}/>
-			</Popup>
+			<MarkerPopup id={mark.id}/>
 		</CircleMarker>
-	}), [events]);
+	}), [events, markerSize]);
 
-	if (loading) {
+	if (loading && events.length === 0) {
 		return <div className="loading-indicator">Loading maps...</div>;
 	}
 
-	if (events.length === 0) {
+	if (!loading && events.length === 0) {
 		return <div className="empty-state-message">No maps found for the selected filters.</div>;
 	}
 
-	return <MarkerClusterGroup>
+	return <MarkerClusterGroup
+		chunkedLoading
+		chunkInterval={120}
+		chunkDelay={25}
+		removeOutsideVisibleBounds
+		showCoverageOnHover={false}
+		spiderfyOnMaxZoom={false}
+		animate={false}
+		animateAddingMarkers={false}
+	>
 		{allMarkers}
 	</MarkerClusterGroup>
 }
