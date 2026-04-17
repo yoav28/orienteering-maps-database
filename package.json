@@ -15,7 +15,7 @@
     "leaflet": "^1.9.4",
     "leaflet.locatecontrol": "^0.85.1",
     "leaflet.markercluster": "^1.5.3",
-    "next": "15.4.7",
+    "next": "15.4.10",
     "react": "19.0.0-rc.1",
     "react-device-detect": "^2.2.3",
     "react-dom": "19.0.0-rc.1",
