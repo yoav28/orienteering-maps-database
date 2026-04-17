@@ -9,6 +9,7 @@ import Map from "@/app/components/Map";
 import "../styles/skeleton.scss";
 import "../styles/filters.scss";
 import "../styles/popup.scss";
+import "../styles/details-panel.scss";
 import "../styles/app.scss";
 
 

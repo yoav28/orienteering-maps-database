@@ -1,15 +1,14 @@
 "use client";
 
-import React, {memo, useEffect, useMemo, useState} from "react";
-import PopupInner from "@/app/components/PopupInner";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {isMobile} from 'react-device-detect';
 import {LocationType} from "@/app/types";
 import dynamic from "next/dynamic";
+import EventDetailsPanel from "@/app/components/EventDetailsPanel";
 
 
-const [CircleMarker, Popup, MarkerClusterGroup] = [
+const [CircleMarker, MarkerClusterGroup] = [
 	dynamic(() => import('react-leaflet').then((mod) => mod.CircleMarker), {ssr: false}),
-	dynamic(() => import('react-leaflet').then((mod) => mod.Popup), {ssr: false}),
 	dynamic(() => import('react-leaflet-markercluster').then(mod => mod.default), {ssr: false})
 ];
 
@@ -25,22 +24,6 @@ const sourceColors: Record<string, string> = {
 const getColor = (source: string) => sourceColors[source] || "black";
 
 
-const MarkerPopup = memo(function MarkerPopup({id}: { id: number }) {
-	const [hasOpened, setHasOpened] = useState(false);
-
-	return (
-		<Popup
-			className="popup"
-			eventHandlers={{
-				add: () => setHasOpened(true),
-			}}
-		>
-			{hasOpened ? <PopupInner id={id}/> : <div>Loading...</div>}
-		</Popup>
-	);
-});
-
-
 interface MarksProps {
 	country: string | null;
 	name: string | null;
@@ -53,10 +36,14 @@ interface MarksProps {
 export default function Marks({country, since, limit, source, name}: MarksProps) {
 	const [events, setEvents] = useState<LocationType[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 	const markerSize = isMobile ? 7 : 4;
 
 	useEffect(() => {
 		if (!country) {
+			setEvents([]);
+			setSelectedEventId(null);
+			setLoading(false);
 			return;
 		}
 
@@ -103,12 +90,45 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 		};
 	}, [country, since, limit, source, name]);
 
+	useEffect(() => {
+		if (!selectedEventId) {
+			return;
+		}
 
-	const allMarkers = useMemo(() => events.map((mark: LocationType) => {
-		return <CircleMarker key={mark.id} center={[mark.lat, mark.lon]} pathOptions={{color: getColor(mark.source)}} radius={markerSize}>
-			<MarkerPopup id={mark.id}/>
-		</CircleMarker>
-	}), [events, markerSize]);
+		const hasSelectedEvent = events.some((event) => event.id === selectedEventId);
+		if (!hasSelectedEvent) {
+			setSelectedEventId(null);
+		}
+	}, [events, selectedEventId]);
+
+	const eventsById = useMemo(() => {
+		const result = new Map<number, LocationType>();
+		for (const event of events) {
+			result.set(event.id, event);
+		}
+
+		return result;
+	}, [events]);
+
+	const selectEvent = useCallback((eventId: number) => {
+		if (!eventsById.has(eventId)) {
+			return;
+		}
+
+		setSelectedEventId(eventId);
+	}, [eventsById]);
+
+	const allMarkers = useMemo(() => events.map((mark) => {
+		return <CircleMarker
+			key={mark.id}
+			center={[mark.lat, mark.lon]}
+			pathOptions={{color: getColor(mark.source)}}
+			radius={markerSize}
+			eventHandlers={{
+				click: () => selectEvent(mark.id),
+			}}
+		/>;
+	}), [events, markerSize, selectEvent]);
 
 	if (loading && events.length === 0) {
 		return <div className="loading-indicator">Loading maps...</div>;
@@ -118,16 +138,25 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 		return <div className="empty-state-message">No maps found for the selected filters.</div>;
 	}
 
-	return <MarkerClusterGroup
-		chunkedLoading
-		chunkInterval={120}
-		chunkDelay={25}
-		removeOutsideVisibleBounds
-		showCoverageOnHover={false}
-		spiderfyOnMaxZoom={false}
-		animate={false}
-		animateAddingMarkers={false}
-	>
-		{allMarkers}
-	</MarkerClusterGroup>
+	return <>
+		<MarkerClusterGroup
+			chunkedLoading
+			chunkInterval={120}
+			chunkDelay={25}
+			removeOutsideVisibleBounds
+			showCoverageOnHover={false}
+			spiderfyOnMaxZoom={false}
+			animate={false}
+			animateAddingMarkers={false}
+		>
+			{allMarkers}
+		</MarkerClusterGroup>
+
+		<EventDetailsPanel
+			events={events}
+			selectedEventId={selectedEventId}
+			onSelectEvent={selectEvent}
+			onClose={() => setSelectedEventId(null)}
+		/>
+	</>;
 }

@@ -20,7 +20,7 @@ const db = new Database(dbPath);
 
 function getMaps(country: string, limit: string, since: string, source: string) {
     
-    let query = `SELECT id, lat, lon, source
+    let query = `SELECT id, lat, lon, source, name, date, country
                  FROM events
                  WHERE map IS NOT NULL`;
     
