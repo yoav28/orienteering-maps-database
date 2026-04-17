@@ -2,8 +2,16 @@ import {NextResponse} from 'next/server';
 import {getEventById} from '@/db';
 
 
-export async function GET(request: Request, context: any) {
-  const event = getEventById(parseInt(context.params.id, 10));
+type RouteContext = {
+	params: Promise<{
+		id: string;
+	}>;
+};
+
+
+export async function GET(request: Request, context: RouteContext) {
+  const {id} = await context.params;
+  const event = getEventById(parseInt(id, 10));
 
   if (!event) {
     return NextResponse.json({ error: 'Event not found' }, {
