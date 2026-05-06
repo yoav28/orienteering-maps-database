@@ -20,11 +20,13 @@ const daysBack = (days: number) => {
 
 
 export default function MapWrapper() {
+	const today = new Date().toISOString().split('T')[0];
 	const [center, setCenter] = useState<[number, number] | null>(null);
 	const [isSidebarOpen, setisSidebarOpen] = useState(false);
 	const [map, setMap] = useState<LeafletMap | null>(null);
 	const [filter, setFilter] = useState<FilterState>({
-		since: daysBack(365 * 5), // Default to 5 years back
+		from: daysBack(365 * 5), // Default to 5 years back
+		to: today,
 		mapStyle: "road",
 		country: null,
 		limit: 999999,
@@ -141,11 +143,11 @@ export default function MapWrapper() {
 			Filters
 		</button>
 
-		<Filters daysBack={daysBack} filter={filter} setFilter={setFilter}/>
+		<Filters filter={filter} setFilter={setFilter}/>
 
 		<div id="filter-sidebar" className={`filter-sidebar ${isSidebarOpen ? 'open' : ''}`} role="dialog" aria-modal="true">
 			<button className="close-sidebar-button" onClick={() => setisSidebarOpen(false)} aria-label="Close sidebar">&times;</button>
-			<Filters daysBack={daysBack} filter={filter} setFilter={setFilter}/>
+			<Filters filter={filter} setFilter={setFilter}/>
 		</div>
 
 		<Map center={center} filter={filter} map={map} setMap={setMap}/>

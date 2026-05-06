@@ -28,19 +28,33 @@ interface MarksProps {
 	country: string | null;
 	name: string | null;
 	source: string;
-	since: string;
+	from: string;
+	to: string;
 	limit: number;
 }
 
 
-export default function Marks({country, since, limit, source, name}: MarksProps) {
+export default function Marks({country, from, to, limit, source, name}: MarksProps) {
 	const [events, setEvents] = useState<LocationType[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+	const [hasInvalidRange, setHasInvalidRange] = useState(false);
 	const markerSize = isMobile ? 7 : 4;
 
 	useEffect(() => {
 		if (!country) {
+			setEvents([]);
+			setSelectedEventId(null);
+			setHasInvalidRange(false);
+			setLoading(false);
+			return;
+		}
+
+		const effectiveFrom = from || "2000-01-01";
+		const effectiveTo = to || new Date().toISOString().split("T")[0];
+
+		if (effectiveFrom > effectiveTo) {
+			setHasInvalidRange(true);
 			setEvents([]);
 			setSelectedEventId(null);
 			setLoading(false);
@@ -49,17 +63,18 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 
 		const controller = new AbortController();
 		const fetchEvents = async () => {
+			setHasInvalidRange(false);
 			setLoading(true);
+			const nameOrDash = name && name.trim().length > 0 ? name : "-";
 			const params = new URLSearchParams({
 				limit: (limit || 999999).toString(),
-				country,
-				source,
-				since,
-				...(name && {name})
+				from: effectiveFrom,
+				to: effectiveTo,
 			}).toString();
+			const endpoint = `/api/maps/${encodeURIComponent(country)}/${encodeURIComponent(source)}/${encodeURIComponent(nameOrDash)}?${params}`;
 
 			try {
-				const response = await fetch(`/api/maps?${params}`, {signal: controller.signal});
+				const response = await fetch(endpoint, {signal: controller.signal});
 
 				if (!response.ok) {
 					console.error("Failed to fetch events:", response.statusText);
@@ -88,7 +103,7 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 		return () => {
 			controller.abort();
 		};
-	}, [country, since, limit, source, name]);
+	}, [country, from, to, limit, source, name]);
 
 	useEffect(() => {
 		if (!selectedEventId) {
@@ -132,6 +147,10 @@ export default function Marks({country, since, limit, source, name}: MarksProps)
 
 	if (loading && events.length === 0) {
 		return <div className="loading-indicator">Loading maps...</div>;
+	}
+
+	if (!loading && hasInvalidRange) {
+		return <div className="empty-state-message">Invalid date range. "From" must be on or before "To".</div>;
 	}
 
 	if (!loading && events.length === 0) {

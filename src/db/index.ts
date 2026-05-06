@@ -18,7 +18,15 @@ const db = new Database(dbPath);
 // - source: Source of the event (text, can be NULL)
 
 
-function getMaps(country: string, limit: string, since: string, source: string) {
+function getMaps(
+    country: string,
+    limit: string,
+    since: string | null,
+    source: string,
+    from?: string | null,
+    to?: string | null,
+    name?: string | null
+) {
     
     let query = `SELECT id, lat, lon, source, name, date, country
                  FROM events
@@ -32,14 +40,26 @@ function getMaps(country: string, limit: string, since: string, source: string) 
         params.push(country);
     }
     
-    if (since) {
+    const effectiveFrom = from ?? since;
+
+    if (effectiveFrom) {
         query += ` AND date >= ?`;
-        params.push(since);
+        params.push(effectiveFrom);
+    }
+
+    if (to) {
+        query += ` AND date <= ?`;
+        params.push(to);
     }
     
     if (source && source !== 'all') {
         query += ` AND source = ?`;
         params.push(source);
+    }
+
+    if (name && name !== '-') {
+        query += ` AND LOWER(name) LIKE LOWER(?)`;
+        params.push(`%${name}%`);
     }
 
     query += ` ORDER BY date DESC`;
@@ -52,7 +72,7 @@ function getMaps(country: string, limit: string, since: string, source: string) 
     const stmt = db.prepare(query);
     const all = stmt.all(...params);
     
-    console.log(`Got ${all.length} events for country: ${country}, limit: ${limit}, since: ${since}, source: ${source}`);
+    console.log(`Got ${all.length} events for country: ${country}, limit: ${limit}, from: ${effectiveFrom}, to: ${to}, source: ${source}, name: ${name ?? '-'}`);
     
     return all;
 }
@@ -78,4 +98,3 @@ function getEventById(id: number) {
 
 
 export { getMaps, getCountries, getEventById };
-

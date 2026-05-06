@@ -29,7 +29,8 @@ export type Event = {
 export type FilterState = {
     country: string | null;
 	source: string;
-	since: string;
+	from: string;
+	to: string;
 	limit: number;
 	mapStyle: string;
 	name: string | null;

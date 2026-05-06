@@ -73,7 +73,8 @@ export default function Map({center, filter, map, setMap}: Props) {
 
 			<Marks
 				country={filter.country}
-				since={filter.since}
+				from={filter.from}
+				to={filter.to}
 				limit={filter.limit}
 				source={filter.source}
 				name={filter.name}

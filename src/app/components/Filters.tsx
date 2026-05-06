@@ -10,12 +10,11 @@ import {FilterState} from '@/app/types';
 
 interface FiltersProps {
 	filter: FilterState;
-	daysBack: (days: number) => string;
 	setFilter: React.Dispatch<React.SetStateAction<FilterState>>;
 }
 
 
-export function Filters({filter, setFilter, daysBack}: FiltersProps) {
+export function Filters({filter, setFilter}: FiltersProps) {
 	const countries = useCountries();
 	const {theme, toggleTheme} = useTheme();
 
@@ -47,18 +46,31 @@ export function Filters({filter, setFilter, daysBack}: FiltersProps) {
 		</div>
 
 		<div>
-			<label htmlFor="since">Time Frame:</label>
-			<select id="since" name="since" defaultValue={daysBack(365 * 5)} onChange={(e) => {
-				        const value = e.target.value;
-				        setFilter((prev) => ({...prev, since: value}));
-			        }}>
-				<option value="2000-01-01">All</option>
-				<option value={daysBack(90)}>Last 90 days</option>
-				<option value={daysBack(365)}>Last year</option>
-				<option value={daysBack(365 * 2)}>Last 2 years</option>
-				<option value={daysBack(365 * 5)}>Last 5 years</option>
-				<option value={daysBack(365 * 10)}>Last 10 years</option>
-			</select>
+			<label htmlFor="from">From:</label>
+			<input
+				id="from"
+				name="from"
+				type="date"
+				value={filter.from}
+				onChange={(e) => {
+					const value = e.target.value || "2000-01-01";
+					setFilter((prev) => ({...prev, from: value}));
+				}}
+			/>
+		</div>
+
+		<div>
+			<label htmlFor="to">To:</label>
+			<input
+				id="to"
+				name="to"
+				type="date"
+				value={filter.to}
+				onChange={(e) => {
+					const value = e.target.value || new Date().toISOString().split("T")[0];
+					setFilter((prev) => ({...prev, to: value}));
+				}}
+			/>
 		</div>
 
 		<div>
