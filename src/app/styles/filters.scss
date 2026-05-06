@@ -17,7 +17,8 @@
 			font-weight: 600;
 		}
 
-		select {
+		select,
+		input[type="date"] {
 			font-size: 16px;
 			font-weight: 500;
 			border: 1px solid #ccc;
@@ -25,22 +26,37 @@
 			background-color: #f9f9f9;
 			cursor: pointer;
 			color: #111;
+			transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+		}
 
-
+		input[type="date"] {
+			min-width: 150px;
 		}
 		
-		select {
+		select,
+		input[type="date"] {
 			padding: 6px 8px;
 			border-radius: 6px;
 			border: 1px solid #ccc;
 			background-color: #f9f9f9;
 			color: #111;
+		}
+
+		select {
 			appearance: none;
 			-webkit-appearance: none;
+		}
 
-			&:focus {
-				outline: none;
-			}
+		select:focus,
+		input[type="date"]:focus {
+			outline: none;
+			border-color: #3d6fb6;
+			box-shadow: 0 0 0 2px rgba(61, 111, 182, 0.2);
+		}
+
+		input[type="date"]::-webkit-calendar-picker-indicator {
+			cursor: pointer;
+			opacity: 0.75;
 		}
 	}
 }
@@ -78,10 +94,16 @@
 
 
 body[data-theme='dark'] {
-	.filters > div > select {
+	.filters > div > select,
+	.filters > div > input[type="date"] {
 		color: #eee;
 		border-color: #555;
 		background-color: #333;
+	}
+
+	.filters > div > input[type="date"]::-webkit-calendar-picker-indicator {
+		filter: invert(1);
+		opacity: 0.9;
 	}
 
 	.theme-toggle-button {
@@ -152,6 +174,12 @@ body[data-theme='dark'] {
 				}
 
 				select {
+					width: 60%;
+					font-size: 14px;
+					padding: 5px;
+				}
+
+				input[type="date"] {
 					width: 60%;
 					font-size: 14px;
 					padding: 5px;
