@@ -88,10 +88,7 @@ export default function EventDetailsPanel({events, selectedEventId, onClose}: Ev
 	}
 
 	const mapUrl = eventDetails?.map || null;
-	const eventUrl = useMemo(
-		() => normalizeExternalUrl(eventDetails?.event_url ?? selectedPreview.event_url),
-		[eventDetails?.event_url, selectedPreview.event_url]
-	);
+	const eventUrl = normalizeExternalUrl(eventDetails?.event_url ?? selectedPreview.event_url);
 	const isLoadingImage = !!mapUrl && !isImageLoaded && !hasImageError;
 
 	const openMap = () => {
