@@ -2,6 +2,7 @@
 
 import React, {useEffect, useMemo, useState} from "react";
 import {Event, LocationType} from "@/app/types";
+import {normalizeExternalUrl} from "@/app/lib/url";
 
 
 const eventCache = new Map<number, Event>();
@@ -87,7 +88,10 @@ export default function EventDetailsPanel({events, selectedEventId, onClose}: Ev
 	}
 
 	const mapUrl = eventDetails?.map || null;
-	const eventUrl = eventDetails?.event_url || null;
+	const eventUrl = useMemo(
+		() => normalizeExternalUrl(eventDetails?.event_url ?? selectedPreview.event_url),
+		[eventDetails?.event_url, selectedPreview.event_url]
+	);
 	const isLoadingImage = !!mapUrl && !isImageLoaded && !hasImageError;
 
 	const openMap = () => {
@@ -124,6 +128,14 @@ export default function EventDetailsPanel({events, selectedEventId, onClose}: Ev
 
 	const openGoogleMaps = () => {
 		window.open(`https://www.google.com/maps/search/?api=1&query=${selectedPreview.lat},${selectedPreview.lon}`, '_blank');
+	};
+
+	const openEventLink = () => {
+		if (!eventUrl) {
+			return;
+		}
+
+		window.open(eventUrl, '_blank');
 	};
 
 
@@ -166,7 +178,7 @@ export default function EventDetailsPanel({events, selectedEventId, onClose}: Ev
 			<button onClick={openGoogleMaps}>
 				Google Maps
 			</button>
-			<button onClick={() => eventUrl && window.open(eventUrl, '_blank')} disabled={!eventUrl}>
+			<button onClick={openEventLink} disabled={!eventUrl}>
 				Event Link
 			</button>
 		</div>

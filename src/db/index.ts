@@ -28,7 +28,7 @@ function getMaps(
     name?: string | null
 ) {
     
-    let query = `SELECT id, lat, lon, source, name, date, country
+    let query = `SELECT id, lat, lon, source, name, date, country, event_url
                  FROM events
                  WHERE map IS NOT NULL`;
     

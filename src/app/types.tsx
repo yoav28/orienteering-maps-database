@@ -11,6 +11,7 @@ export type LocationType = {
 	name: string;
 	date: string;
 	country: string;
+	event_url: string | null;
 };
 
 

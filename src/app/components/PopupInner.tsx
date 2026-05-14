@@ -3,6 +3,7 @@
 import {isDesktop} from 'react-device-detect';
 import {useEffect, useState} from "react";
 import {Event} from "@/app/types";
+import {normalizeExternalUrl} from "@/app/lib/url";
 
 
 const eventCache = new Map<number, Event>();
@@ -96,12 +97,12 @@ export default function PopupInner({id}: { id: number }) {
 	
 	
 	const EventUrl = () => {
-		const {event_url} = event;
+		const eventUrl = normalizeExternalUrl(event.event_url);
 		
-		if (!event_url)
+		if (!eventUrl)
 			return null;
 
-		return <button onClick={() => window.open(event_url, '_blank')} aria-label="Open event Url">Livelox</button>
+		return <button onClick={() => window.open(eventUrl, '_blank')} aria-label="Open event Url">Livelox</button>
 	}
 
 
